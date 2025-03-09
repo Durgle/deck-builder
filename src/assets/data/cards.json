@@ -1,0 +1,202 @@
+[
+  {
+    "id": 1,
+    "name": "Card 1",
+    "image": "assets/cards/Card 1.webp"
+  },
+  {
+    "id": 2,
+    "name": "Card 2",
+    "image": "assets/cards/Card 2.webp"
+  },
+  {
+    "id": 3,
+    "name": "Card 3",
+    "image": "assets/cards/Card 3.webp"
+  },
+  {
+    "id": 4,
+    "name": "Card 4",
+    "image": "assets/cards/Card 4.webp"
+  },
+  {
+    "id": 5,
+    "name": "Card 5",
+    "image": "assets/cards/Card 5.webp"
+  },
+  {
+    "id": 6,
+    "name": "Card 6",
+    "image": "assets/cards/Card 6.webp"
+  },
+  {
+    "id": 7,
+    "name": "Card 7",
+    "image": "assets/cards/Card 7.webp"
+  },
+  {
+    "id": 8,
+    "name": "Card 8",
+    "image": "assets/cards/Card 8.webp"
+  },
+  {
+    "id": 9,
+    "name": "Card 9",
+    "image": "assets/cards/Card 9.webp"
+  },
+  {
+    "id": 10,
+    "name": "Card 10",
+    "image": "assets/cards/Card 10.webp"
+  },
+  {
+    "id": 11,
+    "name": "Card 11",
+    "image": "assets/cards/Card 11.webp"
+  },
+  {
+    "id": 12,
+    "name": "Card 12",
+    "image": "assets/cards/Card 12.webp"
+  },
+  {
+    "id": 13,
+    "name": "Card 13",
+    "image": "assets/cards/Card 13.webp"
+  },
+  {
+    "id": 14,
+    "name": "Card 14",
+    "image": "assets/cards/Card 14.webp"
+  },
+  {
+    "id": 15,
+    "name": "Card 15",
+    "image": "assets/cards/Card 15.webp"
+  },
+  {
+    "id": 16,
+    "name": "Card 16",
+    "image": "assets/cards/Card 16.webp"
+  },
+  {
+    "id": 17,
+    "name": "Card 17",
+    "image": "assets/cards/Card 17.webp"
+  },
+  {
+    "id": 18,
+    "name": "Card 18",
+    "image": "assets/cards/Card 18.webp"
+  },
+  {
+    "id": 19,
+    "name": "Card 19",
+    "image": "assets/cards/Card 19.webp"
+  },
+  {
+    "id": 20,
+    "name": "Card 20",
+    "image": "assets/cards/Card 20.webp"
+  },
+  {
+    "id": 21,
+    "name": "Card 21",
+    "image": "assets/cards/Card 21.webp"
+  },
+  {
+    "id": 22,
+    "name": "Card 22",
+    "image": "assets/cards/Card 22.webp"
+  },
+  {
+    "id": 23,
+    "name": "Card 23",
+    "image": "assets/cards/Card 23.webp"
+  },
+  {
+    "id": 24,
+    "name": "Card 24",
+    "image": "assets/cards/Card 24.webp"
+  },
+  {
+    "id": 25,
+    "name": "Card 25",
+    "image": "assets/cards/Card 25.webp"
+  },
+  {
+    "id": 26,
+    "name": "Card 26",
+    "image": "assets/cards/Card 26.webp"
+  },
+  {
+    "id": 27,
+    "name": "Card 27",
+    "image": "assets/cards/Card 27.webp"
+  },
+  {
+    "id": 28,
+    "name": "Card 28",
+    "image": "assets/cards/Card 28.webp"
+  },
+  {
+    "id": 29,
+    "name": "Card 29",
+    "image": "assets/cards/Card 29.webp"
+  },
+  {
+    "id": 30,
+    "name": "Card 30",
+    "image": "assets/cards/Card 30.webp"
+  },
+  {
+    "id": 31,
+    "name": "Card 31",
+    "image": "assets/cards/Card 31.webp"
+  },
+  {
+    "id": 32,
+    "name": "Card 32",
+    "image": "assets/cards/Card 32.webp"
+  },
+  {
+    "id": 33,
+    "name": "Card 33",
+    "image": "assets/cards/Card 33.webp"
+  },
+  {
+    "id": 34,
+    "name": "Card 34",
+    "image": "assets/cards/Card 34.webp"
+  },
+  {
+    "id": 35,
+    "name": "Card 35",
+    "image": "assets/cards/Card 35.webp"
+  },
+  {
+    "id": 36,
+    "name": "Card 36",
+    "image": "assets/cards/Card 36.webp"
+  },
+  {
+    "id": 37,
+    "name": "Card 37",
+    "image": "assets/cards/Card 37.webp"
+  },
+  {
+    "id": 38,
+    "name": "Card 38",
+    "image": "assets/cards/Card 38.webp"
+  },
+  {
+    "id": 39,
+    "name": "Card 39",
+    "image": "assets/cards/Card 39.webp"
+  },
+  {
+    "id": 40,
+    "name": "Card 40",
+    "image": "assets/cards/Card 40.webp"
+  }
+]
