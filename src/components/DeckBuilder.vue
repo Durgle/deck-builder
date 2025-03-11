@@ -35,10 +35,10 @@ const deckName = ref<string>("");
 const startDrag = (event: DragEvent, card: Card, source: string) => {
     selectCard(card)
     currentSource.value = source;
+
     if (event.dataTransfer) {
         event.dataTransfer.setData('source', source)
         event.dataTransfer.setData('card', JSON.stringify(card));
-        const elem = document.querySelector(".card-image") as HTMLElement
         event.dataTransfer.setDragImage(event.target as HTMLElement, 25, 30);
     }
 };
