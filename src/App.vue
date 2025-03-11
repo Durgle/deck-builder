@@ -1,11 +1,7 @@
-<script setup>
+<script setup lang="ts">
 import DeckBuilder from '@/components/DeckBuilder.vue';
-import cards from '@/assets/data/cards.json'
-
-const deckRules = [
-    (card, selected) => selected.length >= 40,
-    (card, selected) => selected.filter(item => item.id === card.id).length >= 3
-];
+import cards from '@/assets/data/cards.json';
+import {deckRules} from "@/utils/deckRules";
 </script>
 
 <template>

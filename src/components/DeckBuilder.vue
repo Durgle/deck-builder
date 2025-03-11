@@ -1,13 +1,15 @@
-<script setup>
+<script setup lang="ts">
 import {ref, computed, defineAsyncComponent} from 'vue';
 import DefaultCard from "@/components/cardTemplates/DefaultCard.vue";
 import Input from "@/components/Input.vue";
 import {CirclePlus} from "lucide-vue-next";
 import {CircleMinus} from "lucide-vue-next";
+import {Card} from "@/types/card";
+import {DeckRule} from "@/types/deckRule";
 
 const props = defineProps({
     items: {
-        type: Array,
+        type: Array as () => Card[],
         required: true,
     },
     gameType: {
@@ -15,36 +17,35 @@ const props = defineProps({
         default: 'Default'
     },
     selectedItems: {
-        type: Array,
+        type: Array as () => Card[],
         default: [],
     },
     rules: {
-        type: Array,
+        type: Array as () => DeckRule[],
         default: [],
     },
 });
 
-const searchText = ref("");
-const currentSource = ref("");
-const currentCard = ref(null);
-const deckName = ref("");
-const getCardTemplateComponent = () => {
-    return defineAsyncComponent(
-        () => import(`@/components/cardTemplates/${props.gameType}Card.vue`)
-    );
-};
+const searchText = ref<string>("");
+const currentSource = ref<string>("");
+const currentCard = ref<Card | null>(null);
+const deckName = ref<string>("");
 
-const startDrag = (event, card, source) => {
-    event.dataTransfer.setData('source', source)
-    event.dataTransfer.setData('card', JSON.stringify(card));
+const startDrag = (event: DragEvent, card: Card, source: string) => {
     selectCard(card)
     currentSource.value = source;
+    if (event.dataTransfer) {
+        event.dataTransfer.setData('source', source)
+        event.dataTransfer.setData('card', JSON.stringify(card));
+        const elem = document.querySelector(".card-image") as HTMLElement
+        event.dataTransfer.setDragImage(event.target as HTMLElement, 25, 30);
+    }
 };
 
-const onDrop = (event, target) => {
-    const source = event.dataTransfer.getData('source');
+const onDrop = (event: DragEvent, target: string) => {
+    const source = event.dataTransfer?.getData('source');
     currentSource.value = '';
-    if (source !== target && event.dataTransfer.getData('card')) {
+    if (source !== target && event.dataTransfer?.getData('card')) {
         const card = JSON.parse(event.dataTransfer.getData('card'));
         if (!props.rules.some(rule => rule(card, props.selectedItems))) {
             props.selectedItems.push(card);
@@ -52,10 +53,10 @@ const onDrop = (event, target) => {
     }
 };
 
-const removeCardFromDeck = (event, target) => {
-    const source = event.dataTransfer.getData('source');
+const removeCardFromDeck = (event: DragEvent, target:string) => {
+    const source = event.dataTransfer?.getData('source');
     currentSource.value = '';
-    if (source !== target) {
+    if (source !== target && event.dataTransfer) {
         const card = JSON.parse(event.dataTransfer.getData('card'));
         const index = props.selectedItems.findIndex(item => item.id === card.id);
         if (index !== -1) {
@@ -74,7 +75,7 @@ const orderedItems = computed(() => {
     })
 });
 
-const selectCard = (card) => {
+const selectCard = (card: Card) => {
     currentCard.value = card;
 };
 </script>
@@ -102,7 +103,7 @@ const selectCard = (card) => {
                         <img :src="card.image" :alt="card.name" class="card-image"/>
                     </div>
                     <div v-if="currentSource === 'cardList'" class="overlay">
-                        <CirclePlus size="40"/>
+                        <CirclePlus :size="40"/>
                     </div>
                 </div>
             </div>
@@ -125,7 +126,7 @@ const selectCard = (card) => {
                         <img :src="card.image" :alt="card.name" class="card-image"/>
                     </div>
                     <div v-if="currentSource === 'deck'" class="overlay">
-                        <CircleMinus size="40"/>
+                        <CircleMinus :size="40"/>
                     </div>
                 </div>
             </div>

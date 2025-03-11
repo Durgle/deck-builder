@@ -1,4 +1,4 @@
-<script setup>
+<script setup lang="ts">
 import {defineProps, defineEmits} from "vue";
 import {XSquare} from "lucide-vue-next";
 
@@ -15,8 +15,8 @@ const props = defineProps({
 
 const emit = defineEmits(["update:modelValue"]);
 
-const updateValue = (event) => {
-    emit("update:modelValue", event.target.value);
+const updateValue = (event: Event) => {
+    emit("update:modelValue", (event.target as HTMLInputElement).value);
 };
 
 const clearInput = () => {

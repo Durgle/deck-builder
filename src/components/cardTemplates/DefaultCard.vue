@@ -1,3 +1,15 @@
+<script setup lang="ts">
+import {Card} from "@/types/card";
+
+defineProps({
+    card: {
+        type: Object as () => Card,
+        required: true,
+    },
+});
+
+</script>
+
 <template>
     <div class="card-container">
         <div class="card-header">
@@ -10,20 +22,6 @@
     </div>
 </template>
 
-<script setup>
-const props = defineProps({
-    card: {
-        type: Object,
-        required: true,
-    },
-});
-
-const getImageUrl = (image) => {
-    const path = `../../${image}`;
-    return new URL(path, import.meta.url).href;
-};
-</script>
-
 <style scoped>
 .card-container {
     width: 250px;
@@ -32,6 +30,7 @@ const getImageUrl = (image) => {
     border-radius: 8px;
     text-align: center;
     font-family: Arial, sans-serif;
+    margin: 0 auto;
 }
 
 .card-header {
