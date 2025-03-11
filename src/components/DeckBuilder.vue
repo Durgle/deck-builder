@@ -1,41 +1,35 @@
 <script setup lang="ts">
-import {ref, computed, defineAsyncComponent} from 'vue';
-import DefaultTemplate from "@/components/cardTemplates/DefaultCard.vue";
-import YugiohTemplate from "@/components/cardTemplates/YugiohCard.vue";
+import {ref, computed, onMounted, reactive} from 'vue';
 import Input from "@/components/Input.vue";
 import CardPreview from "@/components/CardPreview.vue";
 import {CirclePlus} from "lucide-vue-next";
 import {CircleMinus} from "lucide-vue-next";
 import {Card} from "@/types/card";
 import {DeckRule} from "@/types/deckRule";
+import cards from '@/assets/data/cards.json';
+import yugiohCards from '@/assets/data/yugiohCards.json';
+import {deckRules} from "@/utils/deckRules";
 
 const props = defineProps({
-    items: {
-        type: Array as () => Card[],
-        required: true,
-    },
-    gameType: {
+    cardGame: {
         type: String,
-        default: 'Default'
-    },
-    selectedItems: {
-        type: Array as () => Card[],
-        default: [],
-    },
-    rules: {
-        type: Array as () => DeckRule[],
-        default: [],
+        default: null
     },
 });
 
 const searchText = ref<string>("");
-const currentSource = ref<string>("");
-const currentCard = ref<Card | null>(null);
-const deckName = ref<string>("");
+const dragSource = ref<string>("");
+const state = reactive({
+    currentCard: null as Card | null,
+    deckName: "",
+    items: [] as Card[],
+    selectedItems: [] as Card[],
+    rules: [] as DeckRule[]
+});
 
 const startDrag = (event: DragEvent, card: Card, source: string) => {
     selectCard(card)
-    currentSource.value = source;
+    dragSource.value = source;
 
     if (event.dataTransfer) {
         event.dataTransfer.setData('source', source)
@@ -46,7 +40,7 @@ const startDrag = (event: DragEvent, card: Card, source: string) => {
 
 const onDrop = (event: DragEvent, target: string) => {
     const source = event.dataTransfer?.getData('source');
-    currentSource.value = '';
+    dragSource.value = '';
     if (source !== target && event.dataTransfer?.getData('card')) {
         const card = JSON.parse(event.dataTransfer.getData('card'));
         addCard(card);
@@ -68,38 +62,47 @@ const removeCard = (card: Card) => {
 
 const removeCardFromDeck = (event: DragEvent, target: string) => {
     const source = event.dataTransfer?.getData('source');
-    currentSource.value = '';
+    dragSource.value = '';
     if (source !== target && event.dataTransfer) {
         const card = JSON.parse(event.dataTransfer.getData('card'));
         removeCard(card)
     }
 };
 
-const orderedSelectedItems = computed(() => {
-    return props.selectedItems.sort((a, b) => a.name.localeCompare(b.name));
+const selectCard = (card: Card) => {
+    state.currentCard = card;
+};
+
+const sortedSelectedItems = computed(() => {
+    return state.selectedItems.sort((a, b) => a.name.localeCompare(b.name));
 });
 
-const orderedItems = computed(() => {
-    return props.items.filter((card) => {
+const filteredItems = computed(() => {
+    return state.items.filter((card) => {
         return card.name.toLowerCase().includes(searchText.value)
     })
 });
 
-const selectCard = (card: Card) => {
-    currentCard.value = card;
-};
+onMounted(() => {
+    if (props.cardGame === 'Yugioh') {
+        state.items = yugiohCards;
+        state.rules = deckRules;
+    } else {
+        state.items = cards;
+    }
+});
 </script>
 
 <template>
     <div class="deck-builder">
         <div class="container card-preview">
             <div v-if="state.currentCard" class="preview-container">
-                <CardPreview :card="currentCard" :cardGame="gameType" @addCard="addCard"
+                <CardPreview :card="state.currentCard" :cardGame="cardGame" @addCard="addCard"
                              @removeCard="removeCard"/>
             </div>
         </div>
         <div class="container deck">
-            <Input v-model="deckName" placeholder="Deck name"/>
+            <Input v-model="state.deckName" placeholder="Deck name"/>
             <div class="deck-wrapper">
                 <div
                     class="drop-zone"
@@ -107,7 +110,7 @@ const selectCard = (card: Card) => {
                     @dragover.prevent
                 >
                     <div
-                        v-for="card in orderedSelectedItems"
+                        v-for="card in sortedSelectedItems"
                         :key="card.id"
                         class="card"
                         :draggable="true"
@@ -115,7 +118,7 @@ const selectCard = (card: Card) => {
                         @dragstart="startDrag($event, card,'deck')">
                         <img :src="card.image" :alt="card.name" class="card-image"/>
                     </div>
-                    <div v-if="currentSource === 'cardList'" class="overlay">
+                    <div v-if="dragSource === 'cardList'" class="overlay">
                         <CirclePlus :size="40"/>
                     </div>
                 </div>
@@ -130,7 +133,7 @@ const selectCard = (card: Card) => {
                     @dragover.prevent
                 >
                     <div
-                        v-for="card in orderedItems"
+                        v-for="card in filteredItems"
                         :key="card.id"
                         class="card"
                         :draggable="true"
@@ -138,7 +141,7 @@ const selectCard = (card: Card) => {
                         @dragstart="startDrag($event, card,'cardList')">
                         <img :src="card.image" :alt="card.name" class="card-image"/>
                     </div>
-                    <div v-if="currentSource === 'deck'" class="overlay">
+                    <div v-if="dragSource === 'deck'" class="overlay">
                         <CircleMinus :size="40"/>
                     </div>
                 </div>
