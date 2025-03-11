@@ -1,20 +1,27 @@
 <script setup lang="ts">
 import {Card} from "@/types/card";
+import YugiohCard from "@/components/cardTemplates/YugiohCard.vue";
 
-defineProps({
+const props = defineProps({
     card: {
         type: Object as () => Card,
         required: true,
     },
+    cardGame: {
+        type: String,
+        default: null
+    }
 });
 
-const increment = () => {
-    console.log("Ajouté au deck");
+const emit = defineEmits(['addCard', 'removeCard']);
+const handleAddCard = (event: Event) => {
+    emit("addCard", props.card);
 };
 
-const decrement = () => {
-    console.log("Retiré du deck");
+const handleRemoveCard = (event: Event) => {
+    emit("removeCard", props.card);
 };
+
 </script>
 
 <template>
@@ -28,9 +35,13 @@ const decrement = () => {
             <img :src="card.image" class="card-image" alt="card.name"/>
         </div>
 
+        <div class="card-data">
+            <YugiohCard v-if="cardGame === 'Yugioh'" :card="card"/>
+        </div>
+
         <div class="card-actions">
-            <button @click="increment" class="btn">+1</button>
-            <button @click="decrement" class="btn">-1</button>
+            <button @click="handleAddCard" class="btn">+1</button>
+            <button @click="handleRemoveCard" class="btn">-1</button>
         </div>
     </div>
 </template>
@@ -60,6 +71,10 @@ const decrement = () => {
 .card-image {
     width: 100%;
     border-radius: 8px;
+}
+
+.stats span {
+    flex: 1;
 }
 
 .card-actions {

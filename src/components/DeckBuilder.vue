@@ -3,6 +3,7 @@ import {ref, computed, defineAsyncComponent} from 'vue';
 import DefaultTemplate from "@/components/cardTemplates/DefaultCard.vue";
 import YugiohTemplate from "@/components/cardTemplates/YugiohCard.vue";
 import Input from "@/components/Input.vue";
+import CardPreview from "@/components/CardPreview.vue";
 import {CirclePlus} from "lucide-vue-next";
 import {CircleMinus} from "lucide-vue-next";
 import {Card} from "@/types/card";
@@ -48,21 +49,29 @@ const onDrop = (event: DragEvent, target: string) => {
     currentSource.value = '';
     if (source !== target && event.dataTransfer?.getData('card')) {
         const card = JSON.parse(event.dataTransfer.getData('card'));
-        if (!props.rules.some(rule => rule(card, props.selectedItems))) {
-            props.selectedItems.push(card);
-        }
+        addCard(card);
     }
 };
 
-const removeCardFromDeck = (event: DragEvent, target:string) => {
+const addCard = (card: Card) => {
+    if (!state.rules?.some(rule => rule(card, state.selectedItems))) {
+        state.selectedItems.push(card);
+    }
+}
+
+const removeCard = (card: Card) => {
+    const index = state.selectedItems.findIndex(item => item.id === card.id);
+    if (index !== -1) {
+        state.selectedItems.splice(index, 1);
+    }
+}
+
+const removeCardFromDeck = (event: DragEvent, target: string) => {
     const source = event.dataTransfer?.getData('source');
     currentSource.value = '';
     if (source !== target && event.dataTransfer) {
         const card = JSON.parse(event.dataTransfer.getData('card'));
-        const index = props.selectedItems.findIndex(item => item.id === card.id);
-        if (index !== -1) {
-            props.selectedItems.splice(index, 1);
-        }
+        removeCard(card)
     }
 };
 
@@ -84,9 +93,9 @@ const selectCard = (card: Card) => {
 <template>
     <div class="deck-builder">
         <div class="container card-preview">
-            <div v-if="currentCard" class="preview-container">
-            <YugiohTemplate v-if="gameType === 'Yugioh'" :card="currentCard"/>
-            <DefaultTemplate v-else :card="currentCard"/>
+            <div v-if="state.currentCard" class="preview-container">
+                <CardPreview :card="currentCard" :cardGame="gameType" @addCard="addCard"
+                             @removeCard="removeCard"/>
             </div>
         </div>
         <div class="container deck">
