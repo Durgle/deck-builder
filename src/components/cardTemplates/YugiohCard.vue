@@ -44,7 +44,7 @@ const decrement = () => {
 
         <!-- Effet de la carte -->
         <div class="card-effect">
-            <h3>{{ card.type }}</h3>
+            <h3>{{ card.cardType }}</h3>
             <p>{{ card.description }}</p>
         </div>
 

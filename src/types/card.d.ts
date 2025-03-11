@@ -4,13 +4,21 @@ export interface Card {
     image: string;
 }
 
-export interface YugiohCard extends Partial<Card> {
-    type: string;
-    attribute: string|null,
-    level: string|null,
-    attack: string|null,
-    defense: string|null,
+export interface YugiohCard extends Card {
+    cardType: string;
+    property?: string,
+    attribute?: string,
+    level?: number,
+    rank?: number,
+    attack?: number,
+    defense?: number,
     description: string,
-    race: string|null,
-    cardType: string
+    pendulumEffect?: string,
+    linkArrows?: [],
+    linkLevel?: number,
+    pendulumScale?: number,
+    types?: string[],
+    password?: string,
+    archetypes?: string[],
+    status?: string
 }
