@@ -64,11 +64,6 @@ const removeCardFromDeck = (event, target) => {
     }
 };
 
-const getImageUrl = (image) => {
-    const path = `../${image}`;
-    return new URL(path, import.meta.url).href;
-};
-
 const orderedSelectedItems = computed(() => {
     return props.selectedItems.sort((a, b) => a.name.localeCompare(b.name));
 });
@@ -82,11 +77,6 @@ const orderedItems = computed(() => {
 const selectCard = (card) => {
     currentCard.value = card;
 };
-
-const getImgUrl = ((imagePath) => {
-    const path = `/src/${imagePath}`;
-    return new URL(path, import.meta.url).href
-});
 </script>
 
 <template>
@@ -109,7 +99,7 @@ const getImgUrl = ((imagePath) => {
                         :draggable="true"
                         @click="selectCard(card)"
                         @dragstart="startDrag($event, card,'deck')">
-                        <img :src="getImgUrl(card.image)" :alt="card.name" class="card-image"/>
+                        <img :src="card.image" :alt="card.name" class="card-image"/>
                     </div>
                     <div v-if="currentSource === 'cardList'" class="overlay">
                         <CirclePlus size="40"/>
@@ -132,14 +122,8 @@ const getImgUrl = ((imagePath) => {
                         :draggable="true"
                         @click="selectCard(card)"
                         @dragstart="startDrag($event, card,'cardList')">
-                        <img :src="getImgUrl(card.image)" :alt="card.name" class="card-image"/>
+                        <img :src="card.image" :alt="card.name" class="card-image"/>
                     </div>
-                    <!--                    <component-->
-                    <!--                        :is="getCardTemplateComponent()"-->
-                    <!--                        :card="card"-->
-                    <!--                        draggable="true"-->
-                    <!--                        @dragstart="startDrag($event, card, 'card-list')"-->
-                    <!--                    />-->
                     <div v-if="currentSource === 'deck'" class="overlay">
                         <CircleMinus size="40"/>
                     </div>
@@ -198,6 +182,7 @@ const getImgUrl = ((imagePath) => {
     grid-template-rows: repeat(auto-fill, 70px);
     grid-gap: 10px 5px;
     justify-content: center;
+    user-select: none;
 }
 
 .card-list-wrapper, .deck-wrapper {
@@ -223,6 +208,7 @@ const getImgUrl = ((imagePath) => {
     display: flex;
     flex-direction: column;
     position: relative;
+    cursor: grab;
 }
 
 .card::after {

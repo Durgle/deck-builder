@@ -5,7 +5,7 @@
         </div>
 
         <div class="card-image-container">
-            <img :src="getImageUrl(card.image)" class="card-image"/>
+            <img :src="card.image" class="card-image"/>
         </div>
     </div>
 </template>
