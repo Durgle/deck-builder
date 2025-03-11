@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import {ref, computed, defineAsyncComponent} from 'vue';
-import DefaultCard from "@/components/cardTemplates/DefaultCard.vue";
+import DefaultTemplate from "@/components/cardTemplates/DefaultCard.vue";
+import YugiohTemplate from "@/components/cardTemplates/YugiohCard.vue";
 import Input from "@/components/Input.vue";
 import {CirclePlus} from "lucide-vue-next";
 import {CircleMinus} from "lucide-vue-next";
@@ -83,7 +84,10 @@ const selectCard = (card: Card) => {
 <template>
     <div class="deck-builder">
         <div class="container card-preview">
-            <DefaultCard v-if="currentCard" :card="currentCard"/>
+            <div v-if="currentCard" class="preview-container">
+            <YugiohTemplate v-if="gameType === 'Yugioh'" :card="currentCard"/>
+            <DefaultTemplate v-else :card="currentCard"/>
+            </div>
         </div>
         <div class="container deck">
             <Input v-model="deckName" placeholder="Deck name"/>
