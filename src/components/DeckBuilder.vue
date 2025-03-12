@@ -125,6 +125,7 @@ onMounted(() => {
                         class="card"
                         :draggable="true"
                         @click="selectCard(card)"
+                        @dblclick="removeCard(card)"
                         @dragstart="startDrag($event, card,'deck')">
                         <img :src="card.image" :alt="card.name" class="card-image"/>
                     </div>
@@ -148,6 +149,7 @@ onMounted(() => {
                         class="card"
                         :draggable="true"
                         @click="selectCard(card)"
+                        @dblclick="addCard(card)"
                         @dragstart="startDrag($event, card,'cardList')">
                         <img :src="card.image" :alt="card.name" class="card-image"/>
                     </div>
