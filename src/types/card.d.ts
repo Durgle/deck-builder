@@ -6,19 +6,19 @@ export interface Card {
 
 export interface YugiohCard extends Card {
     cardType: string;
-    property?: string,
-    attribute?: string,
-    level?: number,
-    rank?: number,
-    attack?: number,
-    defense?: number,
+    property: string | null,
+    attribute: string | null,
+    level: number | null,
+    rank: number | null,
+    attack: number | null,
+    defense: number | null,
     description: string,
-    pendulumEffect?: string,
-    linkArrows?: [],
-    linkLevel?: number,
-    pendulumScale?: number,
-    types?: string[],
-    password?: string,
-    archetypes?: string[],
-    status?: string
+    pendulumEffect: string | null,
+    linkArrows: [] | null,
+    linkLevel: number | null,
+    pendulumScale: number | null,
+    types: string[] | null,
+    password: string | null,
+    archetypes: string[] | null,
+    status: string | null
 }
