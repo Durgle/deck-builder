@@ -17,19 +17,29 @@ const props = defineProps({
     },
 });
 
-const searchText = ref<string>("");
-const dragSource = ref<string>("");
-const state = reactive({
-    currentCard: null as Card | null,
+interface DeckBuilderState {
+    currentCard: Card | null,
+    deckName: string,
+    items: Card[],
+    selectedItems: Card[],
+    rules: DeckRule[],
+    searchText: string,
+    dragSource: string
+}
+
+const state: DeckBuilderState = reactive({
+    currentCard: null,
     deckName: "",
-    items: [] as Card[],
-    selectedItems: [] as Card[],
-    rules: [] as DeckRule[]
+    items: [],
+    selectedItems: [],
+    rules: [],
+    searchText: "",
+    dragSource: ""
 });
 
 const startDrag = (event: DragEvent, card: Card, source: string) => {
     selectCard(card)
-    dragSource.value = source;
+    state.dragSource = source;
 
     if (event.dataTransfer) {
         event.dataTransfer.setData('source', source)
@@ -40,7 +50,7 @@ const startDrag = (event: DragEvent, card: Card, source: string) => {
 
 const onDrop = (event: DragEvent, target: string) => {
     const source = event.dataTransfer?.getData('source');
-    dragSource.value = '';
+    state.dragSource = '';
     if (source !== target && event.dataTransfer?.getData('card')) {
         const card = JSON.parse(event.dataTransfer.getData('card'));
         addCard(card);
@@ -62,7 +72,7 @@ const removeCard = (card: Card) => {
 
 const removeCardFromDeck = (event: DragEvent, target: string) => {
     const source = event.dataTransfer?.getData('source');
-    dragSource.value = '';
+    state.dragSource = '';
     if (source !== target && event.dataTransfer) {
         const card = JSON.parse(event.dataTransfer.getData('card'));
         removeCard(card)
@@ -79,7 +89,7 @@ const sortedSelectedItems = computed(() => {
 
 const filteredItems = computed(() => {
     return state.items.filter((card) => {
-        return card.name.toLowerCase().includes(searchText.value)
+        return card.name.toLowerCase().includes(state.searchText)
     })
 });
 
@@ -118,14 +128,14 @@ onMounted(() => {
                         @dragstart="startDrag($event, card,'deck')">
                         <img :src="card.image" :alt="card.name" class="card-image"/>
                     </div>
-                    <div v-if="dragSource === 'cardList'" class="overlay">
+                    <div v-if="state.dragSource === 'cardList'" class="overlay">
                         <CirclePlus :size="40"/>
                     </div>
                 </div>
             </div>
         </div>
         <div class="container card-list">
-            <Input v-model="searchText" placeholder="Search a card" :clearable="true"/>
+            <Input v-model="state.searchText" placeholder="Search a card" :clearable="true"/>
             <div class="card-list-wrapper">
                 <div
                     class="drop-zone"
@@ -141,7 +151,7 @@ onMounted(() => {
                         @dragstart="startDrag($event, card,'cardList')">
                         <img :src="card.image" :alt="card.name" class="card-image"/>
                     </div>
-                    <div v-if="dragSource === 'deck'" class="overlay">
+                    <div v-if="state.dragSource === 'deck'" class="overlay">
                         <CircleMinus :size="40"/>
                     </div>
                 </div>
