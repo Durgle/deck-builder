@@ -4,6 +4,9 @@ import {Sword} from "lucide-vue-next";
 import {Star} from "lucide-vue-next";
 import {YugiohCard} from "@/types/card";
 
+/**
+ * The props object for the component.
+ */
 defineProps({
     card: {
         type: Object as () => YugiohCard,

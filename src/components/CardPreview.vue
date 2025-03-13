@@ -1,7 +1,11 @@
 <script setup lang="ts">
 import {Card} from "@/types/card";
 import YugiohCard from "@/components/cardTemplates/YugiohCard.vue";
+import {CardGame} from "@/enums/cardGame";
 
+/**
+ * The props object for the component.
+ */
 const props = defineProps({
     card: {
         type: Object as () => Card,
@@ -14,12 +18,19 @@ const props = defineProps({
 });
 
 const emit = defineEmits(['addCard', 'removeCard']);
-const handleAddCard = (event: Event) => {
-    emit("addCard", props.card);
+
+/**
+ * Handles the addition of a card.
+ */
+const handleAddCard = () => {
+    emit("addCard", props.card.id);
 };
 
-const handleRemoveCard = (event: Event) => {
-    emit("removeCard", props.card);
+/**
+ * Handles the removal of a card.
+ */
+const handleRemoveCard = () => {
+    emit("removeCard", props.card.id);
 };
 
 </script>
@@ -36,7 +47,7 @@ const handleRemoveCard = (event: Event) => {
         </div>
 
         <div class="card-data">
-            <YugiohCard v-if="cardGame === 'Yugioh'" :card="card"/>
+            <YugiohCard v-if="cardGame === CardGame.YUGIOH" :card="card"/>
         </div>
 
         <div class="card-actions">

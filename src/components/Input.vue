@@ -2,7 +2,10 @@
 import {defineProps, defineEmits} from "vue";
 import {XSquare} from "lucide-vue-next";
 
-const props = defineProps({
+/**
+ * The props object for the component.
+ */
+defineProps({
     modelValue: String,
     label: String,
     type: {
@@ -15,10 +18,18 @@ const props = defineProps({
 
 const emit = defineEmits(["update:modelValue"]);
 
+/**
+ * Handles the event to update the model value.
+ *
+ * @param {Event} event - The event triggered when the input value changes.
+ */
 const updateValue = (event: Event) => {
     emit("update:modelValue", (event.target as HTMLInputElement).value);
 };
 
+/**
+ * Clears the input value.
+ */
 const clearInput = () => {
     emit("update:modelValue", "");
 };
@@ -37,7 +48,7 @@ const clearInput = () => {
                 class="input-field"
             />
             <button v-if="clearable && modelValue" @click="clearInput" class="clear-button">
-                <XSquare size="20"/>
+                <XSquare :size="20"/>
             </button>
         </div>
     </div>

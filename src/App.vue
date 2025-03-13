@@ -1,14 +1,15 @@
 <script setup lang="ts">
 import DeckBuilder from '@/components/DeckBuilder.vue';
+import {CardGame} from "@/enums/cardGame";
 </script>
 
 <template>
     <div class="app">
         <div class="deck-builder-container">
-            <DeckBuilder />
+            <DeckBuilder/>
         </div>
         <div class="deck-builder-container-yugioh">
-            <DeckBuilder cardGame="Yugioh" />
+            <DeckBuilder :cardGame="CardGame.YUGIOH"/>
         </div>
     </div>
 </template>

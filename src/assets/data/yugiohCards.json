@@ -1,5 +1,5 @@
-[
-  {
+{
+  "1": {
     "id": 1,
     "name": "Blue-Eyes White Dragon",
     "image": "https://ms.yugipedia.com//thumb/f/f2/BlueEyesWhiteDragon-SDWD-EN-C-1E.png/409px-BlueEyesWhiteDragon-SDWD-EN-C-1E.png",
@@ -26,7 +26,7 @@
     ],
     "status": null
   },
-  {
+  "2": {
     "id": 2,
     "name": "Dark Magician",
     "image": "https://ms.yugipedia.com//thumb/6/68/DarkMagician-SBC2-NA-C-1E.png/300px-DarkMagician-SBC2-NA-C-1E.png",
@@ -52,7 +52,7 @@
     ],
     "status": null
   },
-  {
+  "3": {
     "id": 3,
     "name": "Dragon Treasure",
     "image": "https://ms.yugipedia.com//thumb/b/ba/DragonTreasure-LOB-EN-C-UE-25thAnniversaryEdition.png/300px-DragonTreasure-LOB-EN-C-UE-25thAnniversaryEdition.png",
@@ -74,7 +74,7 @@
     "archetypes": null,
     "status": null
   },
-  {
+  "4": {
     "id": 4,
     "name": "Mirror Force",
     "image": "https://ms.yugipedia.com//thumb/d/de/MirrorForce-RA03-EN-PlScR-1E.png/300px-MirrorForce-RA03-EN-PlScR-1E.png",
@@ -100,7 +100,7 @@
     ],
     "status": null
   },
-  {
+  "5": {
     "id": 5,
     "name": "Red-Eyes Black Dragon",
     "image": "https://ms.yugipedia.com//thumb/6/6d/RedEyesBlackDragon-SBC2-NA-C-1E.png/300px-RedEyesBlackDragon-SBC2-NA-C-1E.png",
@@ -127,7 +127,7 @@
     ],
     "status": null
   },
-  {
+  "6": {
     "id": 6,
     "name": "Legendary Fisherman",
     "image": "https://ms.yugipedia.com//thumb/9/98/TheLegendaryFisherman-SBC1-EN-C-1E.png/300px-TheLegendaryFisherman-SBC1-EN-C-1E.png",
@@ -153,7 +153,7 @@
     ],
     "status": null
   },
-  {
+  "7": {
     "id": 7,
     "name": "Magician's Circle",
     "image": "https://ms.yugipedia.com//thumb/5/5d/MagiciansCircle-LDS3-EN-C-1E.png/300px-MagiciansCircle-LDS3-EN-C-1E.png",
@@ -175,7 +175,7 @@
     "archetypes": null,
     "status": null
   },
-  {
+  "8": {
     "id": 8,
     "name": "Trap Hole",
     "image": "https://ms.yugipedia.com//thumb/9/95/TrapHole-RA03-EN-PlScR-1E.png/300px-TrapHole-RA03-EN-PlScR-1E.png",
@@ -199,7 +199,7 @@
     ],
     "status": null
   },
-  {
+  "9": {
     "id": 9,
     "name": "Summoned Skull",
     "image": "https://ms.yugipedia.com//thumb/1/14/SummonedSkull-RA03-EN-PlScR-1E.png/300px-SummonedSkull-RA03-EN-PlScR-1E.png",
@@ -216,13 +216,17 @@
     "linkLevel": null,
     "pendulumScale": null,
     "types": [
-      "Fiend","Normal"
+      "Fiend",
+      "Normal"
     ],
     "password": "70781052",
-    "archetypes": ["Archfiend","Skull Archfiend"],
+    "archetypes": [
+      "Archfiend",
+      "Skull Archfiend"
+    ],
     "status": null
   },
-  {
+  "10": {
     "id": 10,
     "name": "Exodia the Forbidden One",
     "image": "https://ms.yugipedia.com//thumb/f/fa/ExodiatheForbiddenOne-OP25-EN-UtR-UE.png/300px-ExodiatheForbiddenOne-OP25-EN-UtR-UE.png",
@@ -239,13 +243,17 @@
     "linkLevel": null,
     "pendulumScale": null,
     "types": [
-      "Spellcaster","Effect"
+      "Spellcaster",
+      "Effect"
     ],
     "password": "33396948",
-    "archetypes": ["Forbidden One","Exodia"],
+    "archetypes": [
+      "Forbidden One",
+      "Exodia"
+    ],
     "status": "LIMITED"
   },
-  {
+  "11": {
     "id": 11,
     "name": "Monster Reborn",
     "image": "https://ms.yugipedia.com//thumb/2/28/MonsterReborn-SBC2-NA-C-1E.png/300px-MonsterReborn-SBC2-NA-C-1E.png",
@@ -267,7 +275,7 @@
     "archetypes": null,
     "status": "LIMITED"
   },
-  {
+  "12": {
     "id": 12,
     "name": "Pot of Greed",
     "image": "https://ms.yugipedia.com//thumb/2/23/PotofGreed-TBC1-EN-UPR-LE.png/300px-PotofGreed-TBC1-EN-UPR-LE.png",
@@ -286,10 +294,12 @@
     "pendulumScale": null,
     "types": null,
     "password": "55144522",
-    "archetypes": ["Greed"],
+    "archetypes": [
+      "Greed"
+    ],
     "status": "FORBIDDEN"
   },
-  {
+  "13": {
     "id": 13,
     "name": "Swords of Revealing Light",
     "image": "https://ms.yugipedia.com//thumb/f/fd/SwordsofRevealingLight-SBC2-NA-C-1E.png/300px-SwordsofRevealingLight-SBC2-NA-C-1E.png",
@@ -311,7 +321,7 @@
     "archetypes": null,
     "status": null
   },
-  {
+  "14": {
     "id": 14,
     "name": "Change of Heart",
     "image": "https://ms.yugipedia.com//thumb/1/1d/ChangeofHeart-RA01-EN-SR-1E.png/300px-ChangeofHeart-RA01-EN-SR-1E.png",
@@ -333,7 +343,7 @@
     "archetypes": null,
     "status": "LIMITED"
   },
-  {
+  "15": {
     "id": 15,
     "name": "Raigeki",
     "image": "https://ms.yugipedia.com//thumb/1/1a/Raigeki-RA03-EN-PlScR-1E.png/300px-Raigeki-RA03-EN-PlScR-1E.png",
@@ -355,7 +365,7 @@
     "archetypes": null,
     "status": null
   },
-  {
+  "16": {
     "id": 16,
     "name": "Mystical Elf",
     "image": "https://ms.yugipedia.com//thumb/2/2b/MysticalElf-LOB-EN-SR-UE-25thAnniversaryEdition.png/300px-MysticalElf-LOB-EN-SR-UE-25thAnniversaryEdition.png",
@@ -372,10 +382,11 @@
     "linkLevel": null,
     "pendulumScale": null,
     "types": [
-      "Spellcaster","Normal"
+      "Spellcaster",
+      "Normal"
     ],
     "password": "15025844",
     "archetypes": null,
     "status": null
   }
-]
+}

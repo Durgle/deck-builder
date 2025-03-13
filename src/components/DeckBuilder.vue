@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {ref, computed, onMounted, reactive} from 'vue';
+import {computed, ComputedRef, onMounted, reactive} from 'vue';
 import Input from "@/components/Input.vue";
 import CardPreview from "@/components/CardPreview.vue";
 import {CirclePlus} from "lucide-vue-next";
@@ -9,7 +9,170 @@ import {DeckRule} from "@/types/deckRule";
 import cards from '@/assets/data/cards.json';
 import yugiohCards from '@/assets/data/yugiohCards.json';
 import {deckRules} from "@/utils/deckRules";
+import {CardGame} from "@/enums/cardGame";
 
+/**
+ * Represents the state of the deck builder
+ *
+ * @interface DeckBuilderState
+ */
+interface DeckBuilderState {
+
+    /**
+     * The currently selected card in the deck builder or null if no card is selected.
+     * @type {Card | null}
+     */
+    currentCard: Card | null;
+
+    /**
+     * The name of the deck being created or edited.
+     * @type {string}
+     */
+    deckName: string;
+
+    /**
+     * A dictionary of card items in the deck, keyed by a string identifier.
+     * @type {{ [key: string]: Card }}
+     */
+    items: { [key: string]: Card };
+
+    /**
+     * An array of the IDs of the currently selected items in the deck builder.
+     * @type {number[]}
+     */
+    selectedItems: number[];
+
+    /**
+     * An array of deck rules to apply to the deck.
+     * @type {DeckRule[]}
+     */
+    rules: DeckRule[];
+
+    /**
+     * The search text input by the user to filter the deck items.
+     * @type {string}
+     */
+    searchText: string;
+
+    /**
+     * The source of the card being dragged (e.g., "deck", "library").
+     * @type {string}
+     */
+    dragSource: string;
+}
+
+/**
+ * The reactive state object that manages the deck builder's state.
+ *
+ * @type {DeckBuilderState}
+ */
+const state: DeckBuilderState = reactive({
+    currentCard: null,
+    deckName: "",
+    items: {},
+    selectedItems: [],
+    rules: [],
+    searchText: "",
+    dragSource: ""
+});
+
+/**
+ * Handles the drag start event for a card, setting up the drag operation.
+ *
+ * @param {DragEvent} event - The drag event triggered when a card starts being dragged.
+ * @param {Card} card - The card being dragged.
+ * @param {string} source - The source zone from where the card is being dragged (e.g., "deck", "library").
+ */
+const onDragStart = (event: DragEvent, card: Card, source: string) => {
+    if (event.dataTransfer) {
+        selectCard(card)
+        event.dataTransfer.setDragImage(event.target as HTMLElement, 25, 30);
+        event.dataTransfer.setData('text/plain', JSON.stringify({source, cardId: card.id}));
+    }
+};
+
+/**
+ * Handles the drop event for dragging and dropping cards between different zones.
+ *
+ * @param {DragEvent} event - The drag event triggered when a card is dropped.
+ * @param {string} targetZone - The zone where the card is being dropped (e.g., "deck", "library").
+ */
+const onDrop = (event: DragEvent, targetZone: string) => {
+    if (event.dataTransfer) {
+        const {source, cardId} = JSON.parse(event.dataTransfer.getData('text/plain'));
+        state.dragSource = '';
+        if (source !== targetZone && cardId) {
+            if (targetZone === "deck") {
+                addCard(cardId);
+            }
+            if (targetZone == "library") {
+                removeCard(cardId)
+            }
+        }
+    }
+};
+
+/**
+ * Adds a card to the selected items list if it meets the defined rules.
+ *
+ * @param {number} cardId - The ID of the card to be added.
+ */
+const addCard = (cardId: number) => {
+    if (!state.rules?.some(rule => rule(cardId, state.selectedItems))) {
+        state.selectedItems.push(cardId);
+    }
+}
+
+/**
+ * Removes a card from the selected items list by its card ID.
+ *
+ * @param {number} cardId - The ID of the card to be removed from the selected items.
+ */
+const removeCard = (cardId: number) => {
+    const index = state.selectedItems.indexOf(cardId);
+    if (index !== -1) {
+        state.selectedItems.splice(index, 1);
+    }
+}
+
+/**
+ * Selects a card and sets it as the current card in the state.
+ *
+ * @param {Card} card - The card to be selected.
+ */
+const selectCard = (card: Card) => {
+    state.currentCard = card;
+};
+
+/**
+ * Computed that returns a sorted array of the selected items.
+ * The items are sorted alphabetically by their `name` property.
+ *
+ * @type {ComputedRef<Card[]>}
+ * @returns {Card[]} A sorted array of selected items based on their `name` property.
+ */
+const sortedSelectedItems:ComputedRef<Card[]> = computed(() => {
+    return state.selectedItems
+        .map(id => state.items[id])
+        .sort((a, b) => a.name.localeCompare(b.name));
+});
+
+/**
+ * Computed that filters the items based on the search text.
+ * The items are filtered by their `name` property
+ *
+ * @type {ComputedRef<Card[]>}
+ * @returns {Card[]} An array of cards filtered
+ */
+const filteredItems:ComputedRef<Card[]> = computed(() => {
+    return Object.values(state.items).filter((card) => {
+        return card.name.toLowerCase().includes(state.searchText)
+    })
+});
+
+/**
+ * The props object for the component.
+ */
 const props = defineProps({
     cardGame: {
         type: String,
@@ -17,90 +180,15 @@ const props = defineProps({
     },
 });
 
-interface DeckBuilderState {
-    currentCard: Card | null,
-    deckName: string,
-    items: Card[],
-    selectedItems: Card[],
-    rules: DeckRule[],
-    searchText: string,
-    dragSource: string
-}
-
-const state: DeckBuilderState = reactive({
-    currentCard: null,
-    deckName: "",
-    items: [],
-    selectedItems: [],
-    rules: [],
-    searchText: "",
-    dragSource: ""
-});
-
-const startDrag = (event: DragEvent, card: Card, source: string) => {
-    selectCard(card)
-    state.dragSource = source;
-
-    if (event.dataTransfer) {
-        event.dataTransfer.setData('source', source)
-        event.dataTransfer.setData('card', JSON.stringify(card));
-        event.dataTransfer.setDragImage(event.target as HTMLElement, 25, 30);
-    }
-};
-
-const onDrop = (event: DragEvent, target: string) => {
-    const source = event.dataTransfer?.getData('source');
-    state.dragSource = '';
-    if (source !== target && event.dataTransfer?.getData('card')) {
-        const card = JSON.parse(event.dataTransfer.getData('card'));
-        addCard(card);
-    }
-};
-
-const addCard = (card: Card) => {
-    if (!state.rules?.some(rule => rule(card, state.selectedItems))) {
-        state.selectedItems.push(card);
-    }
-}
-
-const removeCard = (card: Card) => {
-    const index = state.selectedItems.findIndex(item => item.id === card.id);
-    if (index !== -1) {
-        state.selectedItems.splice(index, 1);
-    }
-}
-
-const removeCardFromDeck = (event: DragEvent, target: string) => {
-    const source = event.dataTransfer?.getData('source');
-    state.dragSource = '';
-    if (source !== target && event.dataTransfer) {
-        const card = JSON.parse(event.dataTransfer.getData('card'));
-        removeCard(card)
-    }
-};
-
-const selectCard = (card: Card) => {
-    state.currentCard = card;
-};
-
-const sortedSelectedItems = computed(() => {
-    return state.selectedItems.sort((a, b) => a.name.localeCompare(b.name));
-});
-
-const filteredItems = computed(() => {
-    return state.items.filter((card) => {
-        return card.name.toLowerCase().includes(state.searchText)
-    })
-});
-
 onMounted(() => {
-    if (props.cardGame === 'Yugioh') {
+    if (props.cardGame === CardGame.YUGIOH) {
         state.items = yugiohCards;
         state.rules = deckRules;
     } else {
         state.items = cards;
     }
 });
+
 </script>
 
 <template>
@@ -120,13 +208,13 @@ onMounted(() => {
                     @dragover.prevent
                 >
                     <div
-                        v-for="card in sortedSelectedItems"
-                        :key="card.id"
+                        v-for="(card, index) in sortedSelectedItems"
+                        :key="`deck-${card.id}-${index}`"
                         class="card"
                         :draggable="true"
                         @click="selectCard(card)"
-                        @dblclick="removeCard(card)"
-                        @dragstart="startDrag($event, card,'deck')">
+                        @dblclick="removeCard(card.id)"
+                        @dragstart="onDragStart($event, card,'deck')">
                         <img :src="card.image" :alt="card.name" class="card-image"/>
                     </div>
                     <div v-if="state.dragSource === 'cardList'" class="overlay">
@@ -140,7 +228,7 @@ onMounted(() => {
             <div class="card-list-wrapper">
                 <div
                     class="drop-zone"
-                    @drop="removeCardFromDeck($event,'cardList')"
+                    @drop="onDrop($event,'library')"
                     @dragover.prevent
                 >
                     <div
@@ -149,8 +237,8 @@ onMounted(() => {
                         class="card"
                         :draggable="true"
                         @click="selectCard(card)"
-                        @dblclick="addCard(card)"
-                        @dragstart="startDrag($event, card,'cardList')">
+                        @dblclick="addCard(card.id)"
+                        @dragstart="onDragStart($event, card,'library')">
                         <img :src="card.image" :alt="card.name" class="card-image"/>
                     </div>
                     <div v-if="state.dragSource === 'deck'" class="overlay">
