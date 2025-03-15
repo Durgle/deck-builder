@@ -85,7 +85,8 @@ const state: DeckBuilderState = reactive({
  */
 const onDragStart = (event: DragEvent, card: Card, source: string) => {
     if (event.dataTransfer) {
-        selectCard(card)
+        state.dragSource = source;
+        selectCard(card);
         event.dataTransfer.setDragImage(event.target as HTMLElement, 25, 30);
         event.dataTransfer.setData('text/plain', JSON.stringify({source, cardId: card.id}));
     }
@@ -102,12 +103,8 @@ const onDrop = (event: DragEvent, targetZone: string) => {
         const {source, cardId} = JSON.parse(event.dataTransfer.getData('text/plain'));
         state.dragSource = '';
         if (source !== targetZone && cardId) {
-            if (targetZone === "deck") {
-                addCard(cardId);
-            }
-            if (targetZone == "library") {
-                removeCard(cardId)
-            }
+            if (targetZone === "deck") addCard(cardId);
+            if (targetZone === "library") removeCard(cardId);
         }
     }
 };
@@ -130,9 +127,7 @@ const addCard = (cardId: number) => {
  */
 const removeCard = (cardId: number) => {
     const index = state.selectedItems.indexOf(cardId);
-    if (index !== -1) {
-        state.selectedItems.splice(index, 1);
-    }
+    if (index !== -1) state.selectedItems.splice(index, 1);
 }
 
 /**
@@ -151,10 +146,8 @@ const selectCard = (card: Card) => {
  * @type {ComputedRef<Card[]>}
  * @returns {Card[]} A sorted array of selected items based on their `name` property.
  */
-const sortedSelectedItems:ComputedRef<Card[]> = computed(() => {
-    return state.selectedItems
-        .map(id => state.items[id])
-        .sort((a, b) => a.name.localeCompare(b.name));
+const sortedSelectedItems: ComputedRef<Card[]> = computed(() => {
+    return state.selectedItems.map(id => state.items[id]).sort((a, b) => a.name.localeCompare(b.name));
 });
 
 /**
@@ -164,10 +157,8 @@ const sortedSelectedItems:ComputedRef<Card[]> = computed(() => {
  * @type {ComputedRef<Card[]>}
  * @returns {Card[]} An array of cards filtered
  */
-const filteredItems:ComputedRef<Card[]> = computed(() => {
-    return Object.values(state.items).filter((card) => {
-        return card.name.toLowerCase().includes(state.searchText)
-    })
+const filteredItems: ComputedRef<Card[]> = computed(() => {
+    return Object.values(state.items).filter((card) => card.name.toLowerCase().includes(state.searchText));
 });
 
 /**
@@ -192,57 +183,57 @@ onMounted(() => {
 </script>
 
 <template>
-    <div class="deck-builder">
-        <div class="container card-preview">
+    <div class="flex flex-1 gap-2 bg-yellow-400 p-2 min-h-60">
+        <div class="flex flex-col p-2 bg-red-600 w-1/4">
             <div v-if="state.currentCard" class="preview-container">
                 <CardPreview :card="state.currentCard" :cardGame="cardGame" @addCard="addCard"
                              @removeCard="removeCard"/>
             </div>
         </div>
-        <div class="container deck">
+        <div class="flex flex-col p-2 bg-blue-600 w-1/2">
             <Input v-model="state.deckName" placeholder="Deck name"/>
-            <div class="deck-wrapper">
+            <div class="flex flex-1">
                 <div
-                    class="drop-zone"
+                    class="p-2 bg-pink-300 flex-1 flex-wrap gap-2 justify-center relative grid grid-cols-10 auto-rows-min select-none"
                     @drop="onDrop($event,'deck')"
                     @dragover.prevent
                 >
                     <div
                         v-for="(card, index) in sortedSelectedItems"
                         :key="`deck-${card.id}-${index}`"
-                        class="card"
+                        class="flex flex-col cursor-grab relative after:absolute after:inset-0 after:bg-white after:opacity-0 after:transition-opacity hover:after:opacity-25"
                         :draggable="true"
                         @click="selectCard(card)"
                         @dblclick="removeCard(card.id)"
                         @dragstart="onDragStart($event, card,'deck')">
-                        <img :src="card.image" :alt="card.name" class="card-image"/>
+                        <img :src="card.image" :alt="card.name" class="rounded-sm"/>
                     </div>
-                    <div v-if="state.dragSource === 'cardList'" class="overlay">
-                        <CirclePlus :size="40"/>
+                    <div v-if="state.dragSource === 'library'" class="absolute inset-0 bg-white/40 flex justify-center items-center z-10 pointer-events-none">
+                        <CirclePlus :size="40" class="fill-green-400" />
                     </div>
                 </div>
             </div>
         </div>
-        <div class="container card-list">
+        <div class="flex flex-col p-2 bg-green-600 w-1/4">
             <Input v-model="state.searchText" placeholder="Search a card" :clearable="true"/>
-            <div class="card-list-wrapper">
+            <div class="flex flex-1">
                 <div
-                    class="drop-zone"
+                    class="p-2 bg-pink-300 flex-1 flex-wrap gap-2 justify-center relative grid grid-cols-5 auto-rows-min select-none"
                     @drop="onDrop($event,'library')"
                     @dragover.prevent
                 >
                     <div
                         v-for="card in filteredItems"
                         :key="card.id"
-                        class="card"
+                        class="flex flex-col cursor-grab relative after:absolute after:inset-0 after:bg-white after:opacity-0 after:transition-opacity hover:after:opacity-25 after:rounded-sm"
                         :draggable="true"
                         @click="selectCard(card)"
                         @dblclick="addCard(card.id)"
                         @dragstart="onDragStart($event, card,'library')">
-                        <img :src="card.image" :alt="card.name" class="card-image"/>
+                        <img :src="card.image" :alt="card.name" class="rounded-sm"/>
                     </div>
-                    <div v-if="state.dragSource === 'deck'" class="overlay">
-                        <CircleMinus :size="40"/>
+                    <div v-if="state.dragSource === 'deck'" class="absolute inset-0 bg-white/40 flex justify-center items-center z-10 pointer-events-none">
+                        <CircleMinus :size="40" class="fill-red-400" />
                     </div>
                 </div>
             </div>
@@ -251,108 +242,4 @@ onMounted(() => {
 </template>
 
 <style scoped>
-.deck-builder {
-    --x-space-arround: 10px;
-    background-color: yellow;
-    padding: var(--x-space-arround);
-    min-height: 600px;
-    display: flex;
-    gap: var(--x-space-arround);
-}
-
-.container.card-preview {
-    background-color: red;
-    width: 0;
-    flex-grow: 1;
-    order: 1;
-}
-
-.container.deck {
-    background-color: blue;
-    width: 0;
-    flex-grow: 2;
-    order: 2;
-}
-
-.container.card-list {
-    background-color: green;
-    width: 0;
-    flex-grow: 1;
-    order: 3;
-}
-
-.container {
-    padding: 10px;
-    display: flex;
-    flex-direction: column;
-}
-
-.drop-zone {
-    padding: 10px;
-    color: black;
-    background-color: pink;
-    position: relative;
-    flex: 1;
-    flex-wrap: wrap;
-    display: grid;
-    grid-template-columns: repeat(auto-fill, 50px);
-    grid-template-rows: repeat(auto-fill, 70px);
-    grid-gap: 10px 5px;
-    justify-content: center;
-    user-select: none;
-}
-
-.card-list-wrapper, .deck-wrapper {
-    flex: 1;
-    display: flex;
-}
-
-.overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: #FFFFFF44;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 1;
-    pointer-events: none;
-}
-
-.card {
-    display: flex;
-    flex-direction: column;
-    position: relative;
-    cursor: grab;
-}
-
-.card::after {
-    content: '';
-    position: absolute;
-    border-radius: 5px;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: #FFFFFF;
-    opacity: 0;
-    transition: opacity 0.3s ease;
-}
-
-.card:hover::after {
-    opacity: 0.3;
-}
-
-.card img {
-    width: 50px;
-    max-height: 70px;
-    border-radius: 2px;
-    transition: opacity 0.3s ease;
-}
-
-.card :hover img {
-    opacity: 0.8;
-}
 </style>

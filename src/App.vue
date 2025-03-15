@@ -4,20 +4,15 @@ import {CardGame} from "@/enums/cardGame";
 </script>
 
 <template>
-    <div class="app">
-        <div class="deck-builder-container">
+    <div class="app flex flex-col gap-2">
+        <div class="deck-builder">
             <DeckBuilder/>
         </div>
-        <div class="deck-builder-container-yugioh">
+        <div class="deck-builder-yugioh">
             <DeckBuilder :cardGame="CardGame.YUGIOH"/>
         </div>
     </div>
 </template>
 
 <style scoped>
-.app {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-}
 </style>

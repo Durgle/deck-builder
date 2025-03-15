@@ -16,44 +16,27 @@ defineProps({
 </script>
 
 <template>
-    <div class="card-info-container">
-
-        <div class="card-info">
-            <div class="stats">
-                <span v-if="card.level"><Star/> {{ card.level }}</span>
-                <span v-if="card.attack"><Sword/> {{ card.attack }}</span>
-                <span v-if="card.defense"><Shield/> {{ card.defense }}</span>
+    <div class="flex flex-col gap-2 space-y-3">
+        <div class="flex justify-between text-sm mb-1">
+            <div class="flex w-full gap-2">
+                <span v-if="card.level" class="flex justify-center p-2 flex-1 items-center gap-1">
+                    <Star/> {{ card.level }}
+                </span>
+                <span v-if="card.attack" class="flex justify-center p-2 flex-1 items-center gap-1">
+                    <Sword/> {{ card.attack }}
+                </span>
+                <span v-if="card.defense" class="flex justify-center p-2 flex-1 items-center gap-1">
+                    <Shield/> {{ card.defense }}
+                </span>
             </div>
         </div>
 
-        <div class="card-effect">
-            <h3>{{ card.cardType }}</h3>
-            <p>{{ card.description }}</p>
+        <div class="bg-white/10 p-2 rounded-sm">
+            <p class="text-lg">{{ card.cardType }}</p>
+            <p class="text-sm text-justify">{{ card.description }}</p>
         </div>
     </div>
 </template>
 
 <style scoped>
-.card-info {
-    display: flex;
-    justify-content: space-between;
-    font-size: 14px;
-    margin-bottom: 5px;
-}
-
-.stats {
-    display: flex;
-    gap: 10px;
-    width: 100%;
-}
-
-.stats span {
-    flex: 1;
-}
-
-.card-effect {
-    background: rgba(255, 255, 255, 0.1);
-    padding: 5px;
-    border-radius: 4px;
-}
 </style>

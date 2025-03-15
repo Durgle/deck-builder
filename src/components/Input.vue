@@ -36,18 +36,18 @@ const clearInput = () => {
 </script>
 
 <template>
-    <div class="input-container">
-        <label v-if="label" class="input-label">{{ label }}</label>
-        <div class="input-wrapper">
+    <div class="flex flex-col mb-2">
+        <label v-if="label" class="font-semibold mb-1">{{ label }}</label>
+        <div class="relative">
             <input
                 :type="type"
                 :placeholder="placeholder"
                 :value="modelValue"
                 @input="updateValue"
-                :class="{'has-clear-button': clearable && modelValue}"
-                class="input-field"
+                :class="{'pr-9': clearable && modelValue}"
+                class="bg-white w-full px-3 py-2 rounded-sm text-gray-700"
             />
-            <button v-if="clearable && modelValue" @click="clearInput" class="clear-button">
+            <button v-if="clearable && modelValue" @click="clearInput" class="absolute right-2 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700">
                 <XSquare :size="20"/>
             </button>
         </div>
