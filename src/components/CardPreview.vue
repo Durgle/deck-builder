@@ -36,7 +36,7 @@ const handleRemoveCard = () => {
 </script>
 
 <template>
-    <div class="flex flex-col bg-gray-900 text-white p-4 rounded-md gap-2">
+    <div class="flex flex-col p-2 gap-2 h-full">
 
         <div>
             <h3 class="text-lg font-semibold">{{ card.name }}</h3>
@@ -46,16 +46,16 @@ const handleRemoveCard = () => {
             <img :src="card.image" class="w-full rounded-lg" alt="card.name"/>
         </div>
 
-        <div>
+        <div v-if="cardGame">
             <YugiohCard v-if="cardGame === CardGame.YUGIOH" :card="card"/>
         </div>
 
-        <div class="flex justify-center gap-4">
+        <div class="flex justify-center gap-4 mt-auto">
             <button @click="handleAddCard"
-                    class="w-12 bg-gray-600 p-2 rounded-sm text-sm font-semibold hover:bg-gray-500">+1
+                    class="cursor-pointer w-12 bg-x-green text-white p-2 rounded-sm text-sm font-semibold hover:bg-x-green-darker">+1
             </button>
             <button @click="handleRemoveCard"
-                    class="w-12 bg-gray-600 p-2 rounded-sm text-sm font-semibold hover:bg-gray-500">-1
+                    class="cursor-pointer w-12 bg-x-red text-white p-2 rounded-sm text-sm font-semibold hover:bg-x-red-darker">-1
             </button>
         </div>
     </div>

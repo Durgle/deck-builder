@@ -31,7 +31,7 @@ defineProps({
             </div>
         </div>
 
-        <div class="bg-white/10 p-2 rounded-sm">
+        <div class="bg-x-secondary-lighter p-2 rounded-sm">
             <p class="text-lg">{{ card.cardType }}</p>
             <p class="text-sm text-justify">{{ card.description }}</p>
         </div>

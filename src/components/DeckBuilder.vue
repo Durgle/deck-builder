@@ -183,18 +183,18 @@ onMounted(() => {
 </script>
 
 <template>
-    <div class="flex flex-1 gap-2 bg-yellow-400 p-2 min-h-60">
-        <div class="flex flex-col p-2 bg-red-600 w-1/4">
-            <div v-if="state.currentCard" class="preview-container">
-                <CardPreview :card="state.currentCard" :cardGame="cardGame" @addCard="addCard"
+    <div class="flex flex-1 gap-2 bg-red-100 p-2 min-h-200 text-x-font bg-x-primary">
+        <div class="flex flex-col p-2 w-1/4">
+            <div class="flex-1 bg-x-secondary rounded-md">
+                <CardPreview v-if="state.currentCard" :card="state.currentCard" :cardGame="cardGame" @addCard="addCard"
                              @removeCard="removeCard"/>
             </div>
         </div>
-        <div class="flex flex-col p-2 bg-blue-600 w-1/2">
+        <div class="flex flex-col p-2 w-1/2">
             <Input v-model="state.deckName" placeholder="Deck name"/>
-            <div class="flex flex-1">
+            <div class="flex flex-1 ">
                 <div
-                    class="p-2 bg-pink-300 flex-1 flex-wrap gap-2 justify-center relative grid grid-cols-10 auto-rows-min select-none"
+                    class="p-2 bg-x-secondary flex-1 flex-wrap gap-2 justify-center relative grid grid-cols-10 auto-rows-min select-none rounded-md"
                     @drop="onDrop($event,'deck')"
                     @dragover.prevent
                 >
@@ -208,17 +208,17 @@ onMounted(() => {
                         @dragstart="onDragStart($event, card,'deck')">
                         <img :src="card.image" :alt="card.name" class="rounded-sm"/>
                     </div>
-                    <div v-if="state.dragSource === 'library'" class="absolute inset-0 bg-white/40 flex justify-center items-center z-10 pointer-events-none">
-                        <CirclePlus :size="40" class="fill-green-400" />
+                    <div v-if="state.dragSource === 'library'" class="absolute border-3 rounded-sm inset-0 bg-white/40 flex justify-center items-center z-10 pointer-events-none">
+                        <CirclePlus :size="40" class="fill-x-green stroke-stone-950" />
                     </div>
                 </div>
             </div>
         </div>
-        <div class="flex flex-col p-2 bg-green-600 w-1/4">
+        <div class="flex flex-col p-2 w-1/4">
             <Input v-model="state.searchText" placeholder="Search a card" :clearable="true"/>
             <div class="flex flex-1">
                 <div
-                    class="p-2 bg-pink-300 flex-1 flex-wrap gap-2 justify-center relative grid grid-cols-5 auto-rows-min select-none"
+                    class="p-2 bg-x-secondary flex-1 flex-wrap gap-2 justify-center relative grid grid-cols-5 auto-rows-min select-none rounded-md"
                     @drop="onDrop($event,'library')"
                     @dragover.prevent
                 >
@@ -232,8 +232,8 @@ onMounted(() => {
                         @dragstart="onDragStart($event, card,'library')">
                         <img :src="card.image" :alt="card.name" class="rounded-sm"/>
                     </div>
-                    <div v-if="state.dragSource === 'deck'" class="absolute inset-0 bg-white/40 flex justify-center items-center z-10 pointer-events-none">
-                        <CircleMinus :size="40" class="fill-red-400" />
+                    <div v-if="state.dragSource === 'deck'" class="border-3 rounded-sm absolute inset-0 bg-white/40 flex justify-center items-center z-10 pointer-events-none">
+                        <CircleMinus :size="40" class="fill-x-red stroke-stone-950" />
                     </div>
                 </div>
             </div>
