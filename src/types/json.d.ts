@@ -5,7 +5,7 @@ declare module '@/assets/data/cards.json' {
     export default value;
 }
 
-declare module '@/assets/data/yugiohCards.json.json' {
+declare module '@/assets/data/yugiohCards.json' {
     const value: { [key: string]: YugiohCard };
     export default value;
 }

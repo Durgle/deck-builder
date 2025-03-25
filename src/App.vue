@@ -9,7 +9,7 @@ import {CardGame} from "@/enums/cardGame";
             <DeckBuilder/>
         </div>
         <div class="deck-builder-yugioh">
-            <DeckBuilder :cardGame="CardGame.YUGIOH"/>
+            <DeckBuilder :cardGame="CardGame.YUGIOH" :enableSecondZone="true" main-zone-name="Main deck" second-zone-name="Extra deck" />
         </div>
     </div>
 </template>

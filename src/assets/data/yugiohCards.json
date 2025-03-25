@@ -388,5 +388,115 @@
     "password": "15025844",
     "archetypes": null,
     "status": null
+  },
+  "17": {
+    "id": 17,
+    "name": "Divine Golden Shadow Dragon Dragluxion",
+    "image": "https://ms.yugipedia.com//thumb/a/aa/DivineGoldenShadowDragonDragluxion-MZTM-EN-UR-1E.png/300px-DivineGoldenShadowDragonDragluxion-MZTM-EN-UR-1E.png",
+    "cardType": "Monster",
+    "property": null,
+    "attribute": "LIGHT",
+    "level": null,
+    "rank": 8,
+    "attack": 2500,
+    "defense": 3000,
+    "description": "2 Level 8 monsters\nIf this card is Special Summoned from the Extra Deck: You can add 1 \"Galaxy\" or \"Tachyon\" card from your Deck to your hand. You can detach 2 materials from this card; Special Summon from your Extra Deck, 1 Rank 8 Dragon Xyz Monster with 3000 ATK, using this card you control as material (this is treated as an Xyz Summon, transfer its materials to the Summoned monster), then you can attach 1 \"Galaxy\" monster from your Extra Deck to it. You can only use each effect of \"Divine Golden Shadow Dragon Dragluxion\" once per turn.",
+    "pendulumEffect": null,
+    "linkArrows": null,
+    "linkLevel": null,
+    "pendulumScale": null,
+    "types": [
+      "Dragon",
+      "XYZ",
+      "Effect"
+    ],
+    "password": "44698398",
+    "archetypes": null,
+    "status": null
+  },
+  "18": {
+    "id": 18,
+    "name": "Trickstar Band Drumatis",
+    "image": "https://ms.yugipedia.com//thumb/9/9a/TrickstarBandDrumatis-MZTM-EN-R-1E.png/300px-TrickstarBandDrumatis-MZTM-EN-R-1E.png",
+    "cardType": "Monster",
+    "property": null,
+    "attribute": "LIGHT",
+    "level": 6,
+    "rank": null,
+    "attack": 2000,
+    "defense": 1000,
+    "description": "2 \"Trickstar\" monsters\n\"Trickstar\" Link Monsters you control that point to this card gain 1000 ATK. You can only use each of the following effects of \"Trickstar Band Drumatis\" once per turn. If this card is Fusion Summoned: You can add 1 \"Trickstar\" card from your Deck to your hand, with a different name from the cards you control and in your GY. If effect damage is inflicted (except during the Damage Step): You can target 1 face-up monster on the field; its ATK becomes 0.",
+    "pendulumEffect": null,
+    "linkArrows": null,
+    "linkLevel": null,
+    "pendulumScale": null,
+    "types": [
+      "Fairy",
+      "Fusion",
+      "Effect"
+    ],
+    "password": "64804137",
+    "archetypes": [
+      "Trickstar"
+    ],
+    "status": null
+  },
+  "19": {
+    "id": 19,
+    "name": "Trickstar Noble Angel",
+    "image": "https://ms.yugipedia.com//thumb/2/2f/TrickstarNobleAngel-MZTM-EN-SR-1E.png/300px-TrickstarNobleAngel-MZTM-EN-SR-1E.png",
+    "cardType": "Monster",
+    "property": null,
+    "attribute": "LIGHT",
+    "level": null,
+    "rank": null,
+    "attack": 2000,
+    "defense": null,
+    "description": "2 \"Trickstar\" monsters\nIf this card is Link Summoned: You can add 1 \"Blue Tears\" card from your Deck to your hand. If you have a Fusion Monster in your field or GY: You can target 1 \"Trickstar\" monster in your GY; Special Summon it. If effect damage is inflicted (except during the Damage Step): You can target 1 face-up card on the field; destroy it. You can only use each effect of \"Trickstar Noble Angel\" once per turn.",
+    "pendulumEffect": null,
+    "linkArrows": [
+      "Bottom-Left",
+      "Bottom-Right"
+    ],
+    "linkLevel": 2,
+    "pendulumScale": null,
+    "types": [
+      "Fairy",
+      "Link",
+      "Effect"
+    ],
+    "password": "37683441",
+    "archetypes": [
+      "Trickstar"
+    ],
+    "status": null
+  },
+  "20": {
+    "id": 20,
+    "name": "Snake-Eyes Execute Dragon",
+    "image": "https://ms.yugipedia.com//thumb/b/bd/SnakeEyesExecuteDragon-ALIN-JP-SR.png/300px-SnakeEyesExecuteDragon-ALIN-JP-SR.png",
+    "cardType": "Monster",
+    "property": null,
+    "attribute": "Fire",
+    "level": 12,
+    "rank": null,
+    "attack": 3000,
+    "defense": 2500,
+    "description": "1 Tuner + 1+ non-Tuner monsters\nDuring the Main Phase (Quick Effect): You can target 1 face-up monster on the field or in either GY; place it face-up in its owner's Spell & Trap Zone as a Continuous Spell, also this card cannot use this effect next turn. During the Battle Phase (Quick Effect): You can target 2 cards on the field (1 monster and 1 Continuous Spell); destroy them. You can only use each effect of \"Snake-Eyes Execute Dragon\" once per turn.",
+    "pendulumEffect": null,
+    "linkArrows": null,
+    "linkLevel": null,
+    "pendulumScale": null,
+    "types": [
+      "Dragon",
+      "Synchro",
+      "Effect"
+    ],
+    "password": "79415624",
+    "archetypes": [
+      "Snake-Eye",
+      "-Eyes Dragon"
+    ],
+    "status": null
   }
 }

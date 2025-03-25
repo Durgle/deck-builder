@@ -10,6 +10,8 @@ import cards from '@/assets/data/cards.json';
 import yugiohCards from '@/assets/data/yugiohCards.json';
 import {deckRules} from "@/utils/deckRules";
 import {CardGame} from "@/enums/cardGame";
+import {CardRule} from "@/types/cardRule";
+import {cardRules} from "@/utils/cardRules";
 
 /**
  * Represents the state of the deck builder
@@ -49,6 +51,12 @@ interface DeckBuilderState {
     rules: DeckRule[];
 
     /**
+     * An array of card rules to apply to the card.
+     * @type {CardRule[]}
+     */
+    secondZoneRules: CardRule[];
+
+    /**
      * The search text input by the user to filter the deck items.
      * @type {string}
      */
@@ -72,6 +80,7 @@ const state: DeckBuilderState = reactive({
     items: {},
     selectedItems: [],
     rules: [],
+    secondZoneRules: [],
     searchText: "",
     dragSource: ""
 });
@@ -147,8 +156,37 @@ const selectCard = (card: Card) => {
  * @returns {Card[]} A sorted array of selected items based on their `name` property.
  */
 const sortedSelectedItems: ComputedRef<Card[]> = computed(() => {
+    return state.selectedItems
+        .map(id => state.items[id])
+        .filter(card => !state.secondZoneRules.some(rule => rule(card)))
+        .sort((a, b) => a.name.localeCompare(b.name));
+});
+
+/**
+ * Computed that returns a sorted array of the selected items.
+ * The items are sorted alphabetically by their `name` property.
+ *
+ * @type {ComputedRef<Card[]>}
+ * @returns {Card[]} A sorted array of selected items based on their `name` property.
+ */
+const sortedSelectedSecondItems: ComputedRef<Card[]> = computed(() => {
+    return state.selectedItems
+        .map(id => state.items[id])
+        .filter(card => state.secondZoneRules.some(rule => rule(card)))
+        .sort((a, b) => a.name.localeCompare(b.name));
+});
+
+/**
+ * Computed that returns a sorted array of the selected items.
+ * The items are sorted alphabetically by their `name` property.
+ *
+ * @type {ComputedRef<Card[]>}
+ * @returns {Card[]} A sorted array of selected items based on their `name` property.
+ */
+const sortedSecondItems: ComputedRef<Card[]> = computed(() => {
     return state.selectedItems.map(id => state.items[id]).sort((a, b) => a.name.localeCompare(b.name));
 });
+
 
 /**
  * Computed that filters the items based on the search text.
@@ -161,6 +199,7 @@ const filteredItems: ComputedRef<Card[]> = computed(() => {
     return Object.values(state.items).filter((card) => card.name.toLowerCase().includes(state.searchText));
 });
 
+
 /**
  * The props object for the component.
  */
@@ -169,12 +208,25 @@ const props = defineProps({
         type: String,
         default: null
     },
+    mainZoneName: {
+        type: String,
+        default: "Deck"
+    },
+    secondZoneName: {
+        type: String,
+        default: null
+    },
+    enableSecondZone: {
+        type: Boolean,
+        default: false
+    }
 });
 
 onMounted(() => {
     if (props.cardGame === CardGame.YUGIOH) {
         state.items = yugiohCards;
         state.rules = deckRules;
+        state.secondZoneRules = cardRules;
     } else {
         state.items = cards;
     }
@@ -183,7 +235,7 @@ onMounted(() => {
 </script>
 
 <template>
-    <div class="flex flex-1 gap-2 bg-red-100 p-2 min-h-150 max-h-200 text-x-font bg-x-primary">
+    <div class="flex flex-1 gap-2 bg-red-100 p-2 h-200 text-x-font bg-x-primary">
         <div class="flex flex-col p-2 w-1/4">
             <div class="flex-1 bg-x-secondary rounded-md overflow-auto">
                 <CardPreview v-if="state.currentCard" :card="state.currentCard" :cardGame="cardGame" @addCard="addCard"
@@ -194,23 +246,42 @@ onMounted(() => {
             <Input v-model="state.deckName" placeholder="Deck name"/>
             <div class="flex flex-1 overflow-y-auto bg-x-secondary rounded-md">
                 <div
-                    class="p-2 flex-1 flex-wrap gap-2 justify-center relative grid grid-cols-10 auto-rows-min select-none
-                    overflow-auto scrollbar scrollbar-thumb-x-primary scrollbar-track-x-secondary scrollbar-thin"
+                    class="flex flex-col flex-grow gap-2 relative h-full overflow-hidden"
                     @drop="onDrop($event,'deck')"
                     @dragover.prevent
                 >
-                    <div
-                        v-for="(card, index) in sortedSelectedItems"
-                        :key="`deck-${card.id}-${index}`"
-                        class="flex flex-col cursor-grab relative after:absolute after:inset-0 after:bg-white after:opacity-0 after:transition-opacity hover:after:opacity-25"
-                        :draggable="true"
-                        @click="selectCard(card)"
-                        @dblclick="removeCard(card.id)"
-                        @dragstart="onDragStart($event, card,'deck')">
-                        <img :src="card.image" :alt="card.name" class="rounded-sm"/>
+                    <h2 class="py-2 px-4 text-xl font-bold bg-x-secondary-lighter shadow-md">{{ mainZoneName }}</h2>
+                    <div :class="{'h-3/5': enableSecondZone}"
+                        class="p-2 grid grid-cols-10 auto-rows-min gap-2 w-full rounded-lg overflow-auto
+                                scrollbar scrollbar-thumb-x-primary scrollbar-track-x-secondary scrollbar-thin">
+                        <div
+                            v-for="(card, index) in sortedSelectedItems"
+                            :key="`deck-${card.id}-${index}`"
+                            class="cursor-grab shadow-md relative after:absolute after:inset-0 after:bg-white after:opacity-0 after:transition-opacity hover:after:opacity-25"
+                            :draggable="true"
+                            @click="selectCard(card)"
+                            @dblclick="removeCard(card.id)"
+                            @dragstart="onDragStart($event, card,'deck')">
+                            <img :src="card.image" :alt="card.name" class="rounded-sm"/>
+                        </div>
                     </div>
-                    <div v-if="state.dragSource === 'library'" class="absolute border-3 rounded-sm inset-0 bg-white/40 flex justify-center items-center z-10 pointer-events-none">
-                        <CirclePlus :size="40" class="fill-x-green stroke-stone-950" />
+                    <h2 v-if="enableSecondZone" class="py-2 px-4 text-xl font-bold bg-x-secondary-lighter shadow-md">{{ secondZoneName }}</h2>
+                    <div v-if="enableSecondZone" class="p-2 grid grid-cols-10 auto-rows-min gap-2 w-full h-2/5 rounded-lg overflow-auto
+                            scrollbar scrollbar-thumb-x-primary scrollbar-track-x-secondary scrollbar-thin">
+                        <div
+                            v-for="(card, index) in sortedSelectedSecondItems"
+                            :key="`deck-${card.id}-${index}`"
+                            class="shadow-md"
+                            :draggable="true"
+                            @click="selectCard(card)"
+                            @dblclick="removeCard(card.id)"
+                            @dragstart="onDragStart($event, card,'deck')">
+                            <img :src="card.image" :alt="card.name" class="rounded-sm"/>
+                        </div>
+                    </div>
+                    <div v-if="state.dragSource === 'library'"
+                         class="absolute border-3 rounded-sm inset-0 bg-black/50 flex justify-center items-center z-10 pointer-events-none">
+                        <CirclePlus :size="40" class="fill-x-green stroke-stone-950"/>
                     </div>
                 </div>
             </div>
@@ -218,25 +289,26 @@ onMounted(() => {
         <div class="flex flex-col p-2 w-1/4">
 
             <Input v-model="state.searchText" placeholder="Search a card" :clearable="true"/>
-            <div class="flex flex-1 overflow-y-auto bg-x-secondary rounded-md">
+            <div class="flex flex-1 overflow-y-auto bg-x-secondary rounded-md relative">
                 <div
-                    class="p-2 flex-1 flex-wrap gap-2 justify-center relative grid grid-cols-5 auto-rows-min select-none
-                    overflow-auto scrollbar scrollbar-thumb-x-primary scrollbar-track-x-secondary scrollbar-thin"
+                    class="p-2 grid grid-cols-5 auto-rows-min gap-2 w-full rounded-lg overflow-auto
+                                scrollbar scrollbar-thumb-x-primary scrollbar-track-x-secondary scrollbar-thin"
                     @drop="onDrop($event,'library')"
                     @dragover.prevent
                 >
                     <div
                         v-for="card in filteredItems"
                         :key="card.id"
-                        class="flex flex-col cursor-grab relative after:absolute after:inset-0 after:bg-white after:opacity-0 after:transition-opacity hover:after:opacity-25 after:rounded-sm"
+                        class="cursor-grab shadow-md relative after:absolute after:inset-0 after:bg-white after:opacity-0 after:transition-opacity hover:after:opacity-25"
                         :draggable="true"
                         @click="selectCard(card)"
                         @dblclick="addCard(card.id)"
                         @dragstart="onDragStart($event, card,'library')">
                         <img :src="card.image" :alt="card.name" class="rounded-sm"/>
                     </div>
-                    <div v-if="state.dragSource === 'deck'" class="border-3 rounded-sm absolute inset-0 bg-white/40 flex justify-center items-center z-10 pointer-events-none">
-                        <CircleMinus :size="40" class="fill-x-red stroke-stone-950" />
+                    <div v-if="state.dragSource === 'deck'"
+                         class="border-3 rounded-sm absolute inset-0 bg-black/50 flex justify-center items-center z-10 pointer-events-none">
+                        <CircleMinus :size="40" class="fill-x-red stroke-stone-950"/>
                     </div>
                 </div>
             </div>
