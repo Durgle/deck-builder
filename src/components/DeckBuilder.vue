@@ -183,18 +183,19 @@ onMounted(() => {
 </script>
 
 <template>
-    <div class="flex flex-1 gap-2 bg-red-100 p-2 min-h-200 text-x-font bg-x-primary">
+    <div class="flex flex-1 gap-2 bg-red-100 p-2 min-h-150 max-h-200 text-x-font bg-x-primary">
         <div class="flex flex-col p-2 w-1/4">
-            <div class="flex-1 bg-x-secondary rounded-md">
+            <div class="flex-1 bg-x-secondary rounded-md overflow-auto">
                 <CardPreview v-if="state.currentCard" :card="state.currentCard" :cardGame="cardGame" @addCard="addCard"
                              @removeCard="removeCard"/>
             </div>
         </div>
         <div class="flex flex-col p-2 w-1/2">
             <Input v-model="state.deckName" placeholder="Deck name"/>
-            <div class="flex flex-1 ">
+            <div class="flex flex-1 overflow-y-auto bg-x-secondary rounded-md">
                 <div
-                    class="p-2 bg-x-secondary flex-1 flex-wrap gap-2 justify-center relative grid grid-cols-10 auto-rows-min select-none rounded-md"
+                    class="p-2 flex-1 flex-wrap gap-2 justify-center relative grid grid-cols-10 auto-rows-min select-none
+                    overflow-auto scrollbar scrollbar-thumb-x-primary scrollbar-track-x-secondary scrollbar-thin"
                     @drop="onDrop($event,'deck')"
                     @dragover.prevent
                 >
@@ -215,10 +216,12 @@ onMounted(() => {
             </div>
         </div>
         <div class="flex flex-col p-2 w-1/4">
+
             <Input v-model="state.searchText" placeholder="Search a card" :clearable="true"/>
-            <div class="flex flex-1">
+            <div class="flex flex-1 overflow-y-auto bg-x-secondary rounded-md">
                 <div
-                    class="p-2 bg-x-secondary flex-1 flex-wrap gap-2 justify-center relative grid grid-cols-5 auto-rows-min select-none rounded-md"
+                    class="p-2 flex-1 flex-wrap gap-2 justify-center relative grid grid-cols-5 auto-rows-min select-none
+                    overflow-auto scrollbar scrollbar-thumb-x-primary scrollbar-track-x-secondary scrollbar-thin"
                     @drop="onDrop($event,'library')"
                     @dragover.prevent
                 >

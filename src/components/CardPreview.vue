@@ -36,14 +36,14 @@ const handleRemoveCard = () => {
 </script>
 
 <template>
-    <div class="flex flex-col p-2 gap-2 h-full">
+    <div class="flex flex-col p-2 gap-2 h-full overflow-auto scrollbar scrollbar-thumb-x-primary scrollbar-track-x-secondary scrollbar-thin">
 
         <div>
-            <h3 class="text-lg font-semibold">{{ card.name }}</h3>
+            <h3 class="text-lg font-semibold text-center">{{ card.name }}</h3>
         </div>
 
         <div>
-            <img :src="card.image" class="w-full rounded-lg" alt="card.name"/>
+            <img :src="card.image" class="rounded-lg w-auto h-auto max-h-90 m-auto" alt="card.name"/>
         </div>
 
         <div v-if="cardGame">
