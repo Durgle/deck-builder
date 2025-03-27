@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {computed, ComputedRef, onMounted, reactive} from 'vue';
+import {computed, ComputedRef, onMounted, reactive, ref} from 'vue';
 import Input from "@/components/Input.vue";
 import CardPreview from "@/components/CardPreview.vue";
 import {CirclePlus} from "lucide-vue-next";
@@ -12,6 +12,44 @@ import {deckRules} from "@/utils/deckRules";
 import {CardGame} from "@/enums/cardGame";
 import {CardRule} from "@/types/cardRule";
 import {cardRules} from "@/utils/cardRules";
+
+/**
+ * Represents the state of the drag and drop
+ *
+ * @interface DeckBuilderState
+ */
+interface DragAndDropState {
+
+    /**
+     * The source of the card being dragged (e.g., "deck", "library").
+     * @type {string}
+     */
+    dragSource: string;
+
+    /**
+     * Indicates whether a card is being dragged over the deck
+     * @type {boolean}
+     */
+    dragOverDeck: boolean;
+
+    /**
+     * Indicates whether a card is being dragged over the library
+     * @type {boolean}
+     */
+    dragOverLibrary: boolean;
+
+    /**
+     * The counter for drag events related to the deck.
+     * @type {number}
+     */
+    deckDragCounter: number;
+
+    /**
+     * The counter for drag events related to the library.
+     * @type {number}
+     */
+    libraryDragCounter: number;
+}
 
 /**
  * Represents the state of the deck builder
@@ -63,10 +101,10 @@ interface DeckBuilderState {
     searchText: string;
 
     /**
-     * The source of the card being dragged (e.g., "deck", "library").
-     * @type {string}
+     * The drag-and-drop
+     * @type {DragAndDropState}
      */
-    dragSource: string;
+    dragAndDropState: DragAndDropState;
 }
 
 /**
@@ -82,7 +120,13 @@ const state: DeckBuilderState = reactive({
     rules: [],
     secondZoneRules: [],
     searchText: "",
-    dragSource: ""
+    dragAndDropState : {
+        dragSource: "",
+        dragOverDeck: false,
+        dragOverLibrary: false,
+        deckDragCounter: 0,
+        libraryDragCounter: 0
+    }
 });
 
 /**
@@ -94,7 +138,7 @@ const state: DeckBuilderState = reactive({
  */
 const onDragStart = (event: DragEvent, card: Card, source: string) => {
     if (event.dataTransfer) {
-        state.dragSource = source;
+        state.dragAndDropState.dragSource = source;
         selectCard(card);
         event.dataTransfer.setDragImage(event.target as HTMLElement, 25, 30);
         event.dataTransfer.setData('text/plain', JSON.stringify({source, cardId: card.id}));
@@ -110,13 +154,53 @@ const onDragStart = (event: DragEvent, card: Card, source: string) => {
 const onDrop = (event: DragEvent, targetZone: string) => {
     if (event.dataTransfer) {
         const {source, cardId} = JSON.parse(event.dataTransfer.getData('text/plain'));
-        state.dragSource = '';
         if (source !== targetZone && cardId) {
             if (targetZone === "deck") addCard(cardId);
             if (targetZone === "library") removeCard(cardId);
         }
     }
+    state.dragAndDropState.dragSource = '';
+    state.dragAndDropState.dragOverDeck = false;
+    state.dragAndDropState.dragOverLibrary = false;
+    state.dragAndDropState.deckDragCounter = 0;
+    state.dragAndDropState.libraryDragCounter = 0;
 };
+
+/**
+ * Handles the event when a draggable element enters the deck drop zone.
+ */
+const onDragEnterDeck = () => {
+    state.dragAndDropState.deckDragCounter++;
+    state.dragAndDropState.dragOverDeck = true;
+}
+
+/**
+ * Handles the event when a draggable element leaves the deck drop zone.
+ */
+const onDragLeaveDeck = () => {
+    state.dragAndDropState.deckDragCounter--;
+    if (state.dragAndDropState.deckDragCounter === 0) {
+        state.dragAndDropState.dragOverDeck = false;
+    }
+}
+
+/**
+ * Handles the event when a draggable element enters the library drop zone.
+ */
+const onDragEnterLibrary = () => {
+    state.dragAndDropState.libraryDragCounter++;
+    state.dragAndDropState.dragOverLibrary = true;
+}
+
+/**
+ * Handles the event when a draggable element leaves the library drop zone.
+ */
+const onDragLeaveLibrary = () => {
+    state.dragAndDropState.libraryDragCounter--;
+    if (state.dragAndDropState.libraryDragCounter === 0) {
+        state.dragAndDropState.dragOverLibrary = false;
+    }
+}
 
 /**
  * Adds a card to the selected items list if it meets the defined rules.
@@ -248,6 +332,8 @@ onMounted(() => {
                 <div
                     class="flex flex-col flex-grow gap-2 relative h-full overflow-hidden"
                     @drop="onDrop($event,'deck')"
+                    @dragenter="onDragEnterDeck"
+                    @dragleave="onDragLeaveDeck"
                     @dragover.prevent
                 >
                     <h2 class="py-2 px-4 text-xl font-bold bg-x-secondary-lighter shadow-md">{{ mainZoneName }}</h2>
@@ -279,9 +365,10 @@ onMounted(() => {
                             <img :src="card.image" :alt="card.name" class="rounded-sm"/>
                         </div>
                     </div>
-                    <div v-if="state.dragSource === 'library'"
-                         class="absolute border-3 rounded-sm inset-0 bg-black/50 flex justify-center items-center z-10 pointer-events-none">
-                        <CirclePlus :size="40" class="fill-x-green stroke-stone-950"/>
+                    <div v-if="state.dragAndDropState.dragSource === 'library'"
+                         class="absolute border-3 rounded-sm inset-0 flex justify-center items-center z-10 pointer-events-none"
+                         :class="state.dragAndDropState.dragOverDeck ? 'bg-white/10 border-x-green' : 'bg-black/30'">
+                        <CirclePlus :size="40" class="bg-white p-1 rounded-full stroke-x-green"/>
                     </div>
                 </div>
             </div>
@@ -294,6 +381,8 @@ onMounted(() => {
                     class="p-2 grid grid-cols-5 auto-rows-min gap-2 w-full rounded-lg overflow-auto
                                 scrollbar scrollbar-thumb-x-primary scrollbar-track-x-secondary scrollbar-thin"
                     @drop="onDrop($event,'library')"
+                    @dragenter="onDragEnterLibrary"
+                    @dragleave="onDragLeaveLibrary"
                     @dragover.prevent
                 >
                     <div
@@ -306,9 +395,10 @@ onMounted(() => {
                         @dragstart="onDragStart($event, card,'library')">
                         <img :src="card.image" :alt="card.name" class="rounded-sm"/>
                     </div>
-                    <div v-if="state.dragSource === 'deck'"
-                         class="border-3 rounded-sm absolute inset-0 bg-black/50 flex justify-center items-center z-10 pointer-events-none">
-                        <CircleMinus :size="40" class="fill-x-red stroke-stone-950"/>
+                    <div v-if="state.dragAndDropState.dragSource === 'deck'"
+                         class="border-3 rounded-sm absolute inset-0 flex justify-center items-center z-10 pointer-events-none"
+                         :class="state.dragAndDropState.dragOverLibrary ? 'bg-white/10 border-x-red' : 'bg-black/30'" >
+                        <CircleMinus :size="40" class="bg-white p-1 rounded-full stroke-x-red"/>
                     </div>
                 </div>
             </div>
