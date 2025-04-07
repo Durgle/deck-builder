@@ -8,16 +8,16 @@
 @theme {
     --color-x-font: var(--font);
     --color-x-font-darker: var(--font-darker);
-    --color-x-primary : var(--primary);
-    --color-x-secondary : var(--secondary);
-    --color-x-secondary-lighter : var(--secondary-lighter);
-    --color-x-input : var(--input);
-    --color-x-red : var(--red);
-    --color-x-red-darker : var(--red-darker);
-    --color-x-blue : var(--blue);
-    --color-x-blue-darker : var(--blue-darker);
-    --color-x-green : var(--green);
-    --color-x-green-darker : var(--green-darker);
+    --color-x-primary: var(--primary);
+    --color-x-secondary: var(--secondary);
+    --color-x-secondary-lighter: var(--secondary-lighter);
+    --color-x-input: var(--input);
+    --color-x-red: var(--red);
+    --color-x-red-darker: var(--red-darker);
+    --color-x-blue: var(--blue);
+    --color-x-blue-darker: var(--blue-darker);
+    --color-x-green: var(--green);
+    --color-x-green-darker: var(--green-darker);
     --spacing: 4px;
 }
 

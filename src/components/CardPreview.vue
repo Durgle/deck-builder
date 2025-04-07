@@ -36,7 +36,8 @@ const handleRemoveCard = () => {
 </script>
 
 <template>
-    <div class="flex flex-col p-2 gap-2 h-full overflow-auto scrollbar scrollbar-thumb-x-primary scrollbar-track-x-secondary scrollbar-thin">
+    <div
+        class="flex flex-col p-2 gap-2 h-full overflow-auto scrollbar scrollbar-thumb-x-primary scrollbar-track-x-secondary scrollbar-thin">
 
         <div>
             <h3 class="text-lg font-semibold text-center">{{ card.name }}</h3>
@@ -52,10 +53,12 @@ const handleRemoveCard = () => {
 
         <div class="flex justify-center gap-4 mt-auto">
             <button @click="handleAddCard"
-                    class="cursor-pointer w-12 bg-x-green text-white p-2 rounded-sm text-sm font-semibold hover:bg-x-green-darker">+1
+                    class="cursor-pointer w-12 bg-x-green text-white p-2 rounded-sm text-sm font-semibold hover:bg-x-green-darker">
+                +1
             </button>
             <button @click="handleRemoveCard"
-                    class="cursor-pointer w-12 bg-x-red text-white p-2 rounded-sm text-sm font-semibold hover:bg-x-red-darker">-1
+                    class="cursor-pointer w-12 bg-x-red text-white p-2 rounded-sm text-sm font-semibold hover:bg-x-red-darker">
+                -1
             </button>
         </div>
     </div>

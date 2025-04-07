@@ -6,5 +6,5 @@
 export enum CardGame {
     YUGIOH = 'yugioh',
     POKEMON = "pokemon",
-    ONE_PIECE = "one piece"
+    ONE_PIECE = "one_piece"
 }

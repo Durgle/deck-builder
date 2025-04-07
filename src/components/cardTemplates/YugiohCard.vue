@@ -1,7 +1,5 @@
 <script setup lang="ts">
-import {Shield} from "lucide-vue-next";
-import {Sword} from "lucide-vue-next";
-import {Star} from "lucide-vue-next";
+import {Shield, Star, Sword} from "lucide-vue-next";
 import {YugiohCard} from "@/types/card";
 
 /**

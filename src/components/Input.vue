@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {defineProps, defineEmits} from "vue";
+import {defineEmits, defineProps} from "vue";
 import {XSquare} from "lucide-vue-next";
 
 /**
@@ -47,7 +47,8 @@ const clearInput = () => {
                 :class="{'pr-9': clearable && modelValue}"
                 class="bg-x-input w-full px-3 py-2 rounded-sm"
             />
-            <button v-if="clearable && modelValue" @click="clearInput" class="absolute right-2 top-1/2 -translate-y-1/2 hover:text-x-font-darker">
+            <button v-if="clearable && modelValue" @click="clearInput"
+                    class="absolute right-2 top-1/2 -translate-y-1/2 hover:text-x-font-darker">
                 <XSquare :size="20"/>
             </button>
         </div>

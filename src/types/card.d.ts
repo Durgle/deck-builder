@@ -22,3 +22,5 @@ export interface YugiohCard extends Card {
     archetypes: string[] | null,
     status: string | null
 }
+
+export type CardType = Card | YugiohCard;
