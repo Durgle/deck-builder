@@ -44,7 +44,7 @@ import {useYugiohStore} from './stores/yugiohStore.js'
 import {usePokemonStore} from './stores/pokemonStore.js'
 import {useBaseStore} from "@/stores/baseStore.ts";
 import CardDetailViewer from "@/components/CardDetailViewer.vue";
-import DeckBuilder2 from "@/components/DeckBuilder2.vue";
+import DeckBuilder2 from "@/components/DeckBuilder.vue";
 
 export default {
     components: {
