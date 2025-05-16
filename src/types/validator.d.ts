@@ -19,5 +19,5 @@ export interface CardProcessor {
     determineCardZone?: (store, card: GenericCard) => string;
     beforeCardRemove?: (store, cardId: string | number) => ValidationResult;
     afterCardRemove?: (store, card: GenericCard) => ValidationResult;
-    sortDeck?: (a: GenericCard, b: GenericCard) => number;
+    sortDeck?: (cards: GenericCard[]) => GenericCard[];
 }

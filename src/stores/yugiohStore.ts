@@ -95,11 +95,9 @@ const yugiohValidators: Validators = {
 }
 
 const yugiohCardProcessor: CardProcessor = {
-    isExtraDeck: (card) => card.isExtraDeck ?? false,
     sortDeck: (cards: GenericCard[]) => {
         return [...cards].sort((a, b) => {
             const isExtraA = a.isExtraDeck ?? false;
-            const isExtraB = b.isExtraDeck ?? false;
 
             const orderMap = isExtraA ? extraDeckOrderMap : mainDeckOrderMap;
 
