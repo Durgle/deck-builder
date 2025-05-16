@@ -1,4 +1,4 @@
-import {CardItem} from "@/types/card";
+import {GenericCard} from "@/types/card";
 import {DeckZone} from "@/types/deck";
 
 export interface ValidationResult {
@@ -7,16 +7,16 @@ export interface ValidationResult {
 }
 
 export interface Validators {
-    validateDeckBeforeAdd?: (store, card: CardItem) => ValidationResult;
-    validateZone?: (store, card: CardItem, targetZone: string, zoneRule: DeckZone) => ValidationResult;
-    validateCardCopies?: (store, card: CardItem) => ValidationResult;
+    validateDeckBeforeAdd?: (store, card: GenericCard) => ValidationResult;
+    validateZone?: (store, card: GenericCard, targetZone: string, zoneRule: DeckZone) => ValidationResult;
+    validateCardCopies?: (store, card: GenericCard) => ValidationResult;
     validateCompleteDeck?: (store) => ValidationResult;
 }
 
 export interface CardProcessor {
-    processCardBeforeAdd?: (store, card: CardItem) => CardItem;
-    processAfterCardAdded?: (store, card: CardItem) => void;
-    determineCardZone?: (store, card: CardItem) => string;
+    processCardBeforeAdd?: (store, card: GenericCard) => GenericCard;
+    processAfterCardAdded?: (store, card: GenericCard) => void;
+    determineCardZone?: (store, card: GenericCard) => string;
     beforeCardRemove?: (store, cardId: string | number) => ValidationResult;
-    afterCardRemove?: (store, card: CardItem) => ValidationResult;
+    afterCardRemove?: (store, card: GenericCard) => ValidationResult;
 }
