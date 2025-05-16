@@ -7,17 +7,21 @@ import {CardStore, CardStoreOptions} from "@/types/store";
 
 const mainDeckOrderMap: Record<string, number> = {
     normal: 0,
-    effect: 1,
-    effect_pendulum: 2,
-    spell: 3,
-    trap: 4,
+    normal_pendulum: 1,
+    effect: 2,
+    effect_pendulum: 3,
+    spell: 4,
+    trap: 5,
 }
 
 const extraDeckOrderMap: Record<string, number> = {
     fusion: 0,
-    synchro: 1,
-    xyz: 2,
-    link: 3,
+    fusion_pendulum: 1,
+    synchro: 2,
+    synchro_pendulum: 3,
+    xyz: 4,
+    xyz_pendulum: 5,
+    link: 6,
 }
 
 // Define YuGiOh-specific deck rules
@@ -98,6 +102,8 @@ const yugiohCardProcessor: CardProcessor = {
     sortDeck: (cards: GenericCard[]) => {
         return [...cards].sort((a, b) => {
             const isExtraA = a.isExtraDeck ?? false;
+
+            console.log(a);
 
             const orderMap = isExtraA ? extraDeckOrderMap : mainDeckOrderMap;
 

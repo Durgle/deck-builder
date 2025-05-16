@@ -27,7 +27,7 @@ export const yugiohApi = {
 
     async searchCards(query: string): Promise<ApiResponse> {
         try {
-            let url = 'https://db.ygoprodeck.com/api/v7/cardinfo.php?num=50&offset=0&banlist=tcg'
+            let url = 'https://db.ygoprodeck.com/api/v7/cardinfo.php?num=100&offset=0'
             if (query) {
                 url += `&fname=${encodeURIComponent(query)}`
             }
@@ -54,7 +54,7 @@ export const yugiohApi = {
             frameType: card.frameType,
             imageUrl: card.card_images?.[0]?.image_url_small || null,
             description: card.desc,
-            isExtraDeck: ['fusion', 'synchro', 'xyz', 'link'].includes(card.frameType),
+            isExtraDeck: ['fusion', 'fusion_pendulum', 'synchro', 'synchro_pendulum', 'xyz', 'xyz_pendulum', 'link'].includes(card.frameType),
             originalData: card
         }
     }
