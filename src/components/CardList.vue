@@ -4,7 +4,7 @@
 
         <SearchBar :store="store"/>
 
-        <div class="flex-1 scroll">
+        <div class="flex-1 scroll relative">
             <div v-if="loading" class="flex flex-col items-center my-8 gap-2">
                 <div class="w-12 h-12 border-4 border-t-transparent rounded-full animate-spin"></div>
                 <div>Loading ...</div>
@@ -31,7 +31,7 @@
                 />
             </div>
             <div v-if="isDroppable()"
-                 class="absolute border-3 rounded-sm inset-0 flex justify-center items-center z-10 pointer-events-none bg-black/30"
+                 class="sticky top-0 h-full w-full border-3 rounded-sm inset-0 flex justify-center items-center z-10 pointer-events-none bg-black/30"
                  :class="{ 'bg-white/30 border-red-400' : isHovering() }">
                 <CircleMinus :size="40" class="bg-white p-1 rounded-full stroke-red-400"/>
             </div>
