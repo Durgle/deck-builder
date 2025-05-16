@@ -1,21 +1,21 @@
 <script setup lang="ts">
 import {Shield, Star, Sword} from "lucide-vue-next";
-import {YugiohCard} from "@/types/card";
+import {GenericCard} from "@/types/card";
 
 /**
  * The props object for the component.
  */
 defineProps({
     card: {
-        type: Object as () => YugiohCard,
+        type: Object as () => GenericCard,
         required: true,
     },
 });
 </script>
 
 <template>
-    <div class="flex flex-col gap-2 space-y-3">
-        <div class="flex justify-between text-sm mb-1">
+    <div class="flex flex-col gap-2 space-y-3 m-2">
+        <div v-if="card.level" class="flex justify-between text-sm mb-1">
             <div class="flex w-full gap-2">
                 <span v-if="card.level" class="flex justify-center p-2 flex-1 items-center gap-1">
                     <Star/> {{ card.level }}
@@ -35,6 +35,3 @@ defineProps({
         </div>
     </div>
 </template>
-
-<style scoped>
-</style>

@@ -6,42 +6,47 @@
 
 /*noinspection CssInvalidAtRule*/
 @theme {
-    --color-x-font: var(--font);
-    --color-x-font-darker: var(--font-darker);
-    --color-x-primary: var(--primary);
-    --color-x-secondary: var(--secondary);
-    --color-x-secondary-lighter: var(--secondary-lighter);
-    --color-x-input: var(--input);
-    --color-x-red: var(--red);
-    --color-x-red-darker: var(--red-darker);
-    --color-x-blue: var(--blue);
-    --color-x-blue-darker: var(--blue-darker);
-    --color-x-green: var(--green);
-    --color-x-green-darker: var(--green-darker);
+
+    --color-tan-50: oklch(0.98 0.0068 67.74);
+    --color-tan-100: oklch(0.95 0.0165 79.35);
+    --color-tan-200: oklch(0.89 0.0327 76.43);
+    --color-tan-300: oklch(0.8 0.0564 74.04);
+    --color-tan-400: oklch(0.72 0.0748 65.48);
+    --color-tan-500: oklch(0.65 0.0883 61.22);
+    --color-tan-600: oklch(0.6 0.0906 53.4);
+    --color-tan-700: oklch(0.52 0.0783 48.34);
+    --color-tan-800: oklch(0.45 0.0624 43.26);
+    --color-tan-900: oklch(0.4 0.0507 44.45);
+    --color-tan-950: oklch(0.26 0.0325 41.03);
+
+    --color-tuatara-50: oklch(0.97 0 0);
+    --color-tuatara-100: oklch(0.93 0 0);
+    --color-tuatara-200: oklch(0.86 0 0);
+    --color-tuatara-300: oklch(0.76 0 0);
+    --color-tuatara-400: oklch(0.63 0 0);
+    --color-tuatara-500: oklch(0.53 0 0);
+    --color-tuatara-600: oklch(0.48 0 0);
+    --color-tuatara-700: oklch(0.43 0 0);
+    --color-tuatara-800: oklch(0.39 0 0);
+    --color-tuatara-900: oklch(0.36 0 0);
+    --color-tuatara-950: oklch(0.27 0 0);
+
+    --color-big-stone-50: oklch(0.98 0.0045 258.32);
+    --color-big-stone-100: oklch(0.95 0.0108 256.7);
+    --color-big-stone-200: oklch(0.89 0.0217 245.88);
+    --color-big-stone-300: oklch(0.79 0.0416 244.91);
+    --color-big-stone-400: oklch(0.68 0.0647 243.01);
+    --color-big-stone-500: oklch(0.58 0.0762 243.89);
+    --color-big-stone-600: oklch(0.5 0.073 247.6);
+    --color-big-stone-700: oklch(0.43 0.0608 247.81);
+    --color-big-stone-800: oklch(0.39 0.0508 249.26);
+    --color-big-stone-900: oklch(0.35 0.0392 248.99);
+    --color-big-stone-950: oklch(0.28 0.0308 252.71);
+
     --spacing: 4px;
 }
 
-:root {
-    --font: #3E3E3E;
-    --font-darker: #323232;
-    --primary: #D4B996;
-    --secondary: #F5E6CC;
-    --secondary-lighter: #fbf5ea;
-    --input: #f3ebe5;
-
-    --green: #82ac1c;
-    --red: #cc0000;
-    --blue: #223692;
-    --green-darker: #688a16;
-    --red-darker: #800000;
-    --blue-darker: #1b2b75;
-}
-
-[data-theme="dark"] {
-    --font: #eaeef4;
-    --font-darker: #abbbd3;
-    --primary: #1E2A38;
-    --secondary: #3A506B;
-    --secondary-lighter: #527198;
-    --input: #2A3B4D;
+/*noinspection CssInvalidAtRule*/
+@utility scroll {
+    @apply overflow-auto scrollbar scrollbar-thumb-tan-300 dark:scrollbar-thumb-big-stone-700 scrollbar-track-tan-200 dark:scrollbar-track-big-stone-500 scrollbar-thin
 }
