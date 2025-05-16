@@ -51,6 +51,7 @@ export const yugiohApi = {
             id: card.id,
             name: card.name,
             type: card.type,
+            frameType: card.frameType,
             imageUrl: card.card_images?.[0]?.image_url_small || null,
             description: card.desc,
             isExtraDeck: ['fusion', 'synchro', 'xyz', 'link'].includes(card.frameType),

@@ -1,9 +1,24 @@
 import {yugiohApi} from '@/api/yugiohApi'
 import {createCardStore} from './storeFactory.js'
 import {GenericCard} from "@/types/card";
-import {Validators} from "@/types/validator";
+import {CardProcessor, Validators} from "@/types/validator";
 import {DeckRules} from "@/types/deck";
 import {CardStore, CardStoreOptions} from "@/types/store";
+
+const mainDeckOrderMap: Record<string, number> = {
+    normal: 0,
+    effect: 1,
+    effect_pendulum: 2,
+    spell: 3,
+    trap: 4,
+}
+
+const extraDeckOrderMap: Record<string, number> = {
+    fusion: 0,
+    synchro: 1,
+    xyz: 2,
+    link: 3,
+}
 
 // Define YuGiOh-specific deck rules
 const yugiohDeckRules: DeckRules = {
@@ -79,9 +94,32 @@ const yugiohValidators: Validators = {
     }
 }
 
+const yugiohCardProcessor: CardProcessor = {
+    isExtraDeck: (card) => card.isExtraDeck ?? false,
+    sortDeck: (cards: GenericCard[]) => {
+        return [...cards].sort((a, b) => {
+            const isExtraA = a.isExtraDeck ?? false;
+            const isExtraB = b.isExtraDeck ?? false;
+
+            const orderMap = isExtraA ? extraDeckOrderMap : mainDeckOrderMap;
+
+            const typeA = (a.frameType ?? '').toLowerCase();
+            const typeB = (b.frameType ?? '').toLowerCase();
+
+            const rankA = orderMap[typeA] ?? 999;
+            const rankB = orderMap[typeB] ?? 999;
+
+            if (rankA !== rankB) return rankA - rankB;
+
+            return a.name.localeCompare(b.name);
+        })
+    },
+}
+
 export const useYugiohStore = createCardStore({
     storeName: 'yugioh',
     api: yugiohApi,
     deckRules: yugiohDeckRules,
-    customValidators: yugiohValidators
+    customValidators: yugiohValidators,
+    customCardProcessors: yugiohCardProcessor
 } as CardStoreOptions)

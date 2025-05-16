@@ -15,7 +15,7 @@
             </h3>
             <div class="grid grid-cols-10 gap-2 m-2 scroll">
                 <CardItem
-                    v-for="card in deckZones[zone.id]"
+                    v-for="card in store.getSortedDeck(zone.id)"
                     :key="card.id"
                     :card="card"
                     :gameType="gameType"
