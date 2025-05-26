@@ -1,23 +1,24 @@
 import {GenericCard} from "@/types/card";
 import {DeckZone} from "@/types/deck";
+import {CardStore} from "@/types/store";
 
 export interface ValidationResult {
     valid: boolean;
     error: string | null;
 }
 
-export interface Validators {
-    validateDeckBeforeAdd?: (store, card: GenericCard) => ValidationResult;
-    validateZone?: (store, card: GenericCard, targetZone: string, zoneRule: DeckZone) => ValidationResult;
-    validateCardCopies?: (store, card: GenericCard) => ValidationResult;
-    validateCompleteDeck?: (store) => ValidationResult;
+export interface Validators<T extends GenericCard = GenericCard> {
+    validateCardBeforeAdd?: (store: CardStore<T>, card: T) => ValidationResult;
+    validateZone?: (store: CardStore<T>, card: T, targetZone: string, zoneRule: DeckZone<T>) => ValidationResult;
+    validateCardCopies?: (store: CardStore<T>, card: T) => ValidationResult;
+    validateCompleteDeck?: (store: CardStore<T>,) => ValidationResult;
 }
 
-export interface CardProcessor {
-    processCardBeforeAdd?: (store, card: GenericCard) => GenericCard;
-    processAfterCardAdded?: (store, card: GenericCard) => void;
-    determineCardZone?: (store, card: GenericCard) => string;
-    beforeCardRemove?: (store, cardId: string | number) => ValidationResult;
-    afterCardRemove?: (store, card: GenericCard) => ValidationResult;
-    sortDeck?: (cards: GenericCard[]) => GenericCard[];
+export interface CardProcessor<T extends GenericCard = GenericCard> {
+    processCardBeforeAdd?: (store: CardStore<T>, card: T) => T;
+    processAfterCardAdded?: (store: CardStore<T>, card: T) => void;
+    determineCardZone?: (store: CardStore<T>, card: T) => string;
+    beforeCardRemove?: (store: CardStore<T>, cardId: string | number) => ValidationResult;
+    afterCardRemove?: (store: CardStore<T>, card: T) => ValidationResult;
+    sortDeck?: (cards: T[]) => T[];
 }

@@ -36,8 +36,7 @@ export const baseApi = {
         return {
             id: card.id,
             name: card.name,
-            imageUrl: card.image,
-            originalData: card
+            imageUrl: card.image
         }
     }
 }

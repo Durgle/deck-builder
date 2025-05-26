@@ -1,9 +1,16 @@
 import {defineStore} from 'pinia'
 import {GenericCard} from '@/types/card';
-import {DeckRules, DeckZone} from '@/types/deck';
 import {CardStoreOptions, CardStoreState} from "@/types/store";
+import {UnwrapRef} from "vue";
 
-export function createCardStore(options: CardStoreOptions) {
+/**
+ * Create a typed card store instance for a specific card game
+ *
+ * @param options Configuration options including API, rules, processors and validators
+ */
+export function createCardStore<T extends GenericCard = GenericCard>(
+    options: CardStoreOptions<T>
+) {
 
     const {
         storeName,
@@ -15,8 +22,8 @@ export function createCardStore(options: CardStoreOptions) {
     } = options
 
     return defineStore(storeName, {
-        state: (): CardStoreState => ({
-            deckZones: deckRules.zones.reduce((acc: Record<string, GenericCard[]>, zone: DeckZone) => {
+        state: () => ({
+            deckZones: deckRules.zones.reduce<Record<string, T[]>>((acc, zone) => {
                 acc[zone.id] = []
                 return acc
             }, {}),
@@ -25,9 +32,14 @@ export function createCardStore(options: CardStoreOptions) {
             loading: false,
             error: null,
             gameType: storeName
-        }),
+        } as CardStoreState<T>),
 
         getters: {
+            /**
+             * Get number of cards per zone
+             *
+             * @returns {Record<string, number>} Object mapping zone ID to card count
+             */
             zoneCounts(state): Record<string, number> {
                 const counts: Record<string, number> = {}
                 Object.keys(state.deckZones).forEach(zone => {
@@ -36,42 +48,62 @@ export function createCardStore(options: CardStoreOptions) {
                 return counts;
             },
 
+            /**
+             * Check if a card is already in the deck.
+             */
             isCardInDeck(state): (id: string | number) => boolean {
-                return (id) => Object.values(state.deckZones).some(zone =>
-                    zone.some(card => card.id === id)
-                );
+                return (id) =>
+                    Object.values(state.deckZones).some((zone) =>
+                        zone.some((card: T) => card.id === id)
+                    );
             },
 
+            /**
+             * Count number of copies of a card in the deck.
+             */
             getCardCountInDeck(state): (id: string | number) => number {
-                return (id) => Object.values(state.deckZones).reduce((count, zone) =>
-                    count + zone.filter(card => card.id === id).length, 0
-                );
+                return (id) =>
+                    Object.values(state.deckZones).reduce(
+                        (count, zone) => count + zone.filter((card: T) => card.id === id).length,
+                        0
+                    );
             },
 
-            getDeckRules(): DeckRules {
+            /**
+             * Get the rules associated with this deck.
+             */
+            getDeckRules() {
                 return deckRules;
             },
 
+            /**
+             * Total number of cards across all deck zones.
+             */
             getTotalCardCount(state): number {
-                return Object.values(state.deckZones).reduce((count, zone) =>
-                    count + zone.length, 0
+                return Object.values(state.deckZones).reduce(
+                    (count, zone) => count + zone.length,
+                    0
                 );
             },
 
+            /**
+             * Get cards in a zone, optionally sorted.
+             */
             getSortedDeck: (state) => {
-                return (zoneId: string): GenericCard[] => {
+                return (zoneId: string): T[] => {
                     const cards = state.deckZones[zoneId] ?? [];
-
                     if (customCardProcessors?.sortDeck) {
                         return customCardProcessors.sortDeck(cards);
                     }
-
                     return [...cards].sort((a, b) => a.name.localeCompare(b.name));
-                }
+                };
             },
         },
 
         actions: {
+            /**
+             * Search cards via API and apply adapter if needed.
+             */
             async searchCards(query: string) {
                 this.loading = true;
                 this.error = null;
@@ -103,13 +135,20 @@ export function createCardStore(options: CardStoreOptions) {
                     this.loading = false;
                 }
             },
-            selectCard(card: GenericCard): void {
+
+            /**
+             * Select a card (used for preview or actions).
+             */
+            selectCard(card: UnwrapRef<T>): void {
                 this.currentCard = card;
             },
 
-            canAddCard(card: GenericCard): { valid: boolean; error?: string | null; zone?: string } {
-                if (customValidators?.validateDeckBeforeAdd) {
-                    const result = customValidators.validateDeckBeforeAdd(this, card);
+            /**
+             * Validate if a card can be added to the deck.
+             */
+            canAddCard(card: T): { valid: boolean; error?: string | null; zone?: string } {
+                if (customValidators?.validateCardBeforeAdd) {
+                    const result = customValidators.validateCardBeforeAdd(this, card);
                     if (!result.valid) return {valid: false, error: result.error};
                 }
 
@@ -144,7 +183,10 @@ export function createCardStore(options: CardStoreOptions) {
                 return {valid: true, zone: targetZone};
             },
 
-            addCardToDeck(card: GenericCard): boolean {
+            /**
+             * Add a card to the appropriate zone.
+             */
+            addCardToDeck(card: T): boolean {
 
                 this.error = null;
 
@@ -175,7 +217,7 @@ export function createCardStore(options: CardStoreOptions) {
                 }
 
                 // Step 3: Clone the card and add a unique key for Vue rendering
-                let cardToAdd = {...card} as GenericCard;
+                let cardToAdd = {...card}
 
                 // Hook before add
                 if (customCardProcessors?.processCardBeforeAdd) {
@@ -192,7 +234,10 @@ export function createCardStore(options: CardStoreOptions) {
                 return true
             },
 
-            determineCardZone(card: GenericCard): string {
+            /**
+             * Determine which zone the card should go to.
+             */
+            determineCardZone(card: T): string {
 
                 if (customCardProcessors?.determineCardZone) {
                     return customCardProcessors.determineCardZone(this, card);
@@ -206,6 +251,9 @@ export function createCardStore(options: CardStoreOptions) {
                 return deckRules.defaultZone;
             },
 
+            /**
+             * Remove a card from the deck by ID.
+             */
             removeCardFromDeck(id: string | number): boolean {
 
                 if (!this.isCardInDeck(id)) return false;
@@ -216,7 +264,7 @@ export function createCardStore(options: CardStoreOptions) {
                 }
 
                 for (const zoneId in this.deckZones) {
-                    const index = this.deckZones[zoneId].findIndex(card => card.id === id);
+                    const index = this.deckZones[zoneId].findIndex((card: T) => card.id === id);
                     if (index !== -1) {
 
                         // Remove the card

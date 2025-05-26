@@ -1,10 +1,12 @@
 import {yugiohApi} from '@/api/yugiohApi'
 import {createCardStore} from './storeFactory.js'
-import {GenericCard} from "@/types/card";
+import {YugiohAppCard} from "@/types/card";
 import {CardProcessor, Validators} from "@/types/validator";
 import {DeckRules} from "@/types/deck";
-import {CardStore, CardStoreOptions} from "@/types/store";
 
+/**
+ * Sorting priority for cards in the Main Deck
+ */
 const mainDeckOrderMap: Record<string, number> = {
     normal: 0,
     normal_pendulum: 1,
@@ -14,6 +16,9 @@ const mainDeckOrderMap: Record<string, number> = {
     trap: 5,
 }
 
+/**
+ * Sorting priority for cards in the Extra Deck
+ */
 const extraDeckOrderMap: Record<string, number> = {
     fusion: 0,
     fusion_pendulum: 1,
@@ -24,8 +29,10 @@ const extraDeckOrderMap: Record<string, number> = {
     link: 6,
 }
 
-// Define YuGiOh-specific deck rules
-const yugiohDeckRules: DeckRules = {
+/**
+ * Yu-Gi-Oh! deck rules
+ */
+const yugiohDeckRules: DeckRules<YugiohAppCard> = {
     maxCopiesPerCard: 3,
     defaultZone: 'main',
     zones: [
@@ -33,39 +40,43 @@ const yugiohDeckRules: DeckRules = {
             id: 'main',
             name: 'Main Deck',
             maxCards: 60,
-            cardFilter: (card: GenericCard) => !card.isExtraDeck
+            cardFilter: (card) => !card.isExtraDeck
         },
         {
             id: 'extra',
             name: 'Extra Deck',
             maxCards: 15,
-            cardFilter: (card: GenericCard) => card.isExtraDeck
+            cardFilter: (card) => card.isExtraDeck
         },
     ]
 }
 
-// Custom Validator for Yu-gi-oh
-const yugiohValidators: Validators = {
-    validateCardCopies: (store: CardStore, card: GenericCard) => {
+/**
+ * Custom validators for Yu-Gi-Oh! deck rules
+ */
+const yugiohValidators: Validators<YugiohAppCard> = {
+
+    /**
+     * Validates whether a specific card can be added
+     */
+    validateCardCopies: (store, card) => {
 
         const cardCount = store.getCardCountInDeck(card.id)
 
-        if (card.originalData && card.originalData.banlist_info) {
-            const banlistInfo = card.originalData.banlist_info.ban_tcg ||
-                card.originalData.banlist_info.ban_ocg ||
-                'unlimited';
+        const banlistInfo = card.banlist_info.ban_tcg ||
+            card.banlist_info.ban_ocg ||
+            'unlimited';
 
-            if (banlistInfo === 'banned' && cardCount >= 1) {
-                return {valid: false, error: `${card.name} is banned and cannot be used`}
-            }
+        if (banlistInfo === 'banned' && cardCount >= 1) {
+            return {valid: false, error: `${card.name} is banned and cannot be used`}
+        }
 
-            if (banlistInfo === 'limited' && cardCount >= 1) {
-                return {valid: false, error: `${card.name} is limited to 1 copy`}
-            }
+        if (banlistInfo === 'limited' && cardCount >= 1) {
+            return {valid: false, error: `${card.name} is limited to 1 copy`}
+        }
 
-            if (banlistInfo === 'semi-limited' && cardCount >= 2) {
-                return {valid: false, error: `${card.name} is semi-limited to 2 copies`}
-            }
+        if (banlistInfo === 'semi-limited' && cardCount >= 2) {
+            return {valid: false, error: `${card.name} is semi-limited to 2 copies`}
         }
 
         if (yugiohDeckRules.maxCopiesPerCard && cardCount >= yugiohDeckRules.maxCopiesPerCard) {
@@ -78,7 +89,10 @@ const yugiohValidators: Validators = {
         return {valid: true, error: null}
     },
 
-    validateCompleteDeck: (store: CardStore) => {
+    /**
+     * Validates the entire deck
+     */
+    validateCompleteDeck: (store) => {
         const mainDeckCount = store.deckZones.main.length
         const extraDeckCount = store.deckZones.extra.length
 
@@ -98,12 +112,13 @@ const yugiohValidators: Validators = {
     }
 }
 
-const yugiohCardProcessor: CardProcessor = {
-    sortDeck: (cards: GenericCard[]) => {
+/**
+ * Custom card processor for sorting Yu-Gi-Oh! cards in the deck
+ */
+const yugiohCardProcessor: CardProcessor<YugiohAppCard> = {
+    sortDeck: (cards) => {
         return [...cards].sort((a, b) => {
             const isExtraA = a.isExtraDeck ?? false;
-
-            console.log(a);
 
             const orderMap = isExtraA ? extraDeckOrderMap : mainDeckOrderMap;
 
@@ -120,10 +135,10 @@ const yugiohCardProcessor: CardProcessor = {
     },
 }
 
-export const useYugiohStore = createCardStore({
+export const useYugiohStore = createCardStore<YugiohAppCard>({
     storeName: 'yugioh',
     api: yugiohApi,
     deckRules: yugiohDeckRules,
     customValidators: yugiohValidators,
     customCardProcessors: yugiohCardProcessor
-} as CardStoreOptions)
+})

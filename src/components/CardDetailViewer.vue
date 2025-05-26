@@ -1,18 +1,22 @@
 <template>
     <div v-if="currentCard" class="card-viewer-zone h-full flex flex-col">
-        <div class="p-2 scroll flex-1">
-            <h3 class="text-lg font-bold mb-2">{{ currentCard.name }}</h3>
+
+        <!-- Card image and details -->
+        <div class="p-2 scroll flex-1 flex flex-col gap-4">
+
+            <h3 class="text-lg font-bold text-center">{{ currentCard.name }}</h3>
 
             <div class="flex flex-col items-center">
                 <img
                     :src="currentCard.imageUrl || fallbackImage"
                     :alt="currentCard.name"
-                    class="w-auto h-auto mb-4 rounded-sm shadow-md max-h-90"
+                    class="w-auto h-auto rounded-sm shadow-md max-h-80"
                 />
+            </div>
 
-                <div class="w-full mt-2 text-sm bg-tan-100 dark:bg-big-stone-400 rounded">
-                    <YugiohCard v-if="gameType === 'yugioh'" :card="currentCard"/>
-                </div>
+            <!-- Game-specific card display -->
+            <div class="w-full text-sm">
+                <YugiohCard v-if="gameType === 'yugioh'" :card="currentCard"/>
             </div>
         </div>
         <div class="p-2 flex gap-4 justify-center">

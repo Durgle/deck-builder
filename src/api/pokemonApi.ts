@@ -1,5 +1,5 @@
 import {ApiResponse} from '@/types/api';
-import {GenericCard} from '@/types/card';
+import {PokemonAppCard} from '@/types/card';
 
 interface PokemonCard {
     id: string;
@@ -11,8 +11,6 @@ interface PokemonCard {
     };
     rules?: string[];
     subtypes?: string[];
-
-    [key: string]: any;
 }
 
 interface PokemonApiResponse {
@@ -44,17 +42,17 @@ export const pokemonApi = {
         }
     },
 
-    mapCardData(card: PokemonCard): GenericCard {
+    mapCardData(card: PokemonCard): PokemonAppCard {
         return {
             id: card.id,
             name: card.name,
             type: card.supertype,
+            subtypes: card.subtypes || null,
             imageUrl: card.images?.small,
             description: card.rules?.join(' ') || '',
             isEnergy: card.supertype === 'Energy',
             isPokemon: card.supertype === 'Pokémon',
-            isTrainer: card.supertype === 'Trainer',
-            originalData: card
+            isTrainer: card.supertype === 'Trainer'
         }
     }
 }
