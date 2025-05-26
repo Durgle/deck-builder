@@ -1,21 +1,17 @@
 <template>
     <div
-        v-if="visible && message"
-        :class="[
-      'flash-message border-l-4 p-4 rounded mb-2 flex justify-between items-start relative',
-      typeClass
-    ]"
+        v-show="visible && message"
+        :class="[ 'border-l-4 p-4 rounded mb-2 flex justify-between items-start relative select-none transition-opacity duration-300 ease-in-out', typeClass ]"
         role="alert"
+        aria-live="assertive"
     >
         <div class="flex-1 pr-4">
             {{ message.content }}
         </div>
-        <CircleX
-            @click="close"
-            aria-label="Close"
-            :size="20"
-            class="absolute right-1.5 top-1.5 font-bold leading-none focus:outline-none cursor-pointer hover:text-white"
-        />
+        <button @click="close" aria-label="Close"
+                class="absolute right-1.5 top-1.5 font-bold leading-none focus:outline-none hover:text-white">
+            <CircleX :size="20"/>
+        </button>
     </div>
 </template>
 
@@ -24,12 +20,16 @@ import {FlashMessage} from "@/types/flashMessage";
 import {computed, ref, watch} from "vue";
 import {CircleX} from "lucide-vue-next";
 
+/**
+ * Props definition.
+ *
+ * @prop {FlashMessage} message - The message
+ */
 const props = defineProps<{
     message: FlashMessage
 }>()
 
 const visible = ref(true)
-
 const typeClass = computed(() => {
     switch (props.message.type) {
         case 'error':
@@ -58,22 +58,3 @@ function close() {
 }
 
 </script>
-
-<style scoped>
-.flash-message {
-    transition: opacity 0.3s ease;
-    user-select: none;
-}
-
-button {
-    cursor: pointer;
-    background: transparent;
-    border: none;
-    color: inherit;
-    line-height: 1;
-}
-
-button:hover {
-    color: #000000;
-}
-</style>

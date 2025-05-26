@@ -1,52 +1,73 @@
-import {DragZoneType, useDragContextStore} from '@/stores/dragContextStore'
+import {useDragContextStore} from '@/stores/dragContextStore'
 import {ref} from "vue";
-import {DragPayload, DropHandler} from "@/types/drag";
+import {DragPayload, DragZoneType, DropHandler} from "@/types/drag";
 
+/**
+ * Composable to handle drag-and-drop behavior for a specific zone
+ *
+ * @param zoneName - The identifier for the drop zone
+ * @param onDropHandler - Callback invoked when a valid drop occurs
+ */
 export function useDropZone(zoneName: Exclude<DragZoneType, null>, onDropHandler: DropHandler) {
 
-    const dragCounter = ref(0)
-    const dragSource = useDragContextStore()
+    const dragCounter = ref(0);
+    const dragContext = useDragContextStore();
 
+    /**
+     * Triggered when a draggable item enters the zone
+     * Sets the current zone as the hover zone if it's the first entry
+     */
     function onDragEnter() {
         if (dragCounter.value === 0) {
-            dragSource.setHoverZone(zoneName);
+            dragContext.setHoverZone(zoneName);
         }
         dragCounter.value++;
     }
 
+    /**
+     * Triggered when a draggable item leaves the zone
+     * Clears the hover zone if no more items are inside
+     */
     function onDragLeave() {
         dragCounter.value--;
         if (dragCounter.value <= 0) {
             dragCounter.value = 0;
-            dragSource.clearHoverZone();
+            dragContext.clearHoverZone();
         }
     }
 
+    /**
+     * Triggered when an item is dropped into the zone
+     * Parses the payload and delegates it to the provided handler if the drop is valid
+     *
+     * @param event - The drag event object
+     * @param zoneId - (Optional) Sub-zone ID within the main drop zone
+     */
     function onDrop(event: DragEvent, zoneId?: string) {
-        dragCounter.value = 0
+        dragCounter.value = 0;
 
         try {
-            if (!event.dataTransfer) return
+            if (!event.dataTransfer) return;
 
-            const raw = event.dataTransfer.getData('text/plain')
-            if (!raw) return
+            const rawData = event.dataTransfer.getData('text/plain');
+            if (!rawData) return;
 
-            const data: DragPayload = JSON.parse(raw)
+            const data: DragPayload = JSON.parse(rawData);
 
-            if (!dragSource.isDroppable(zoneName)) return
+            if (!dragContext.isDroppable(zoneName)) return;
 
-            onDropHandler(data, event, zoneId)
+            onDropHandler(data, event, zoneId);
         } catch (error) {
-            console.error('Error handling drop:', error)
+            console.error('Error handling drop:', error);
         } finally {
-            dragSource.clearSource()
-            dragSource.clearHoverZone()
+            dragContext.clearSource();
+            dragContext.clearHoverZone();
         }
     }
 
     return {
-        isHovering: () => dragSource.isHovering(zoneName),
-        isDroppable: () => dragSource.isDroppable(zoneName),
+        isHovering: () => dragContext.isHovering(zoneName),
+        isDroppable: () => dragContext.isDroppable(zoneName),
         onDragEnter,
         onDragLeave,
         onDrop

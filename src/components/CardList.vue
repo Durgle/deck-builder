@@ -14,7 +14,8 @@
                 No cards found.
             </div>
 
-            <div v-else class="grid grid-cols-6 gap-2 p-2"
+            <div v-else
+                 class="grid grid-cols-6 gap-2 p-2"
                  @dragover.prevent
                  @dragenter="onDragEnter()"
                  @dragleave="onDragLeave()"
@@ -32,7 +33,8 @@
             </div>
             <div v-if="isDroppable()"
                  class="sticky top-0 h-full w-full border-3 rounded-sm inset-0 flex justify-center items-center z-10 pointer-events-none bg-black/30"
-                 :class="{ 'bg-white/30 border-red-400' : isHovering() }">
+                 :class="{ 'bg-white/30 border-red-400' : isHovering() }"
+            >
                 <CircleMinus :size="40" class="bg-white p-1 rounded-full stroke-red-400"/>
             </div>
         </div>
@@ -50,6 +52,12 @@ import {useDropZone} from "@/composables/useDropZone";
 import {DragPayload} from "@/types/drag";
 import FlashMessage from "@/components/FlashMessage.vue";
 
+
+/**
+ * Props definition.
+ *
+ * @prop {CardStore} store - The Card store
+ */
 const props = defineProps<{
     store: CardStore
 }>();
@@ -58,14 +66,22 @@ const cards = computed(() => props.store.searchResults);
 const loading = computed(() => props.store.loading);
 const error = computed(() => props.store.error);
 const gameType = computed(() => props.store.gameType as GameType);
-const zoneName = 'card-list'
+const zoneName = 'card-list';
 
+const {onDragEnter, onDragLeave, isHovering, isDroppable, onDrop} = useDropZone(zoneName, handleDrop);
+
+/**
+ * Handles drop event
+ * Removes card from deck only if gameType matches.
+ */
 function handleDrop(data: DragPayload) {
-    if (data.gameType !== gameType.value) return
-    props.store.removeCardFromDeck(data.card.id)
+    if (data.gameType !== gameType.value) return;
+    props.store.removeCardFromDeck(data.card.id);
 }
 
-const {onDragEnter, onDragLeave, isHovering, isDroppable, onDrop} = useDropZone(zoneName, handleDrop)
+/**
+ * Selects a card in the store
+ */
 const selectCard = (card: GenericCard) => {
     props.store.selectCard(card);
 }

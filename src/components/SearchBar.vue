@@ -20,6 +20,11 @@ import Input from '@/components/Input.vue'
 import {Search} from 'lucide-vue-next'
 import type {CardStore} from '@/types/store'
 
+/**
+ * Props definition.
+ *
+ * @prop {CardStore} store - The Card store
+ */
 const props = defineProps<{
     store: CardStore
 }>()

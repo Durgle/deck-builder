@@ -8,11 +8,12 @@
             @dragover.prevent
             @dragenter="onDragEnter()"
             @dragleave="onDragLeave()"
-            @drop="onDrop($event, zone.id)"
+            @drop="onDrop($event)"
         >
             <h3 class="text-lg font-semibold py-2 px-4 bg-tan-600 text-tan-100 dark:bg-big-stone-900">
                 {{ zone.name }}
             </h3>
+
             <div class="grid grid-cols-10 gap-2 m-2 scroll">
                 <CardItem
                     v-for="card in store.getSortedDeck(zone.id)"
@@ -41,29 +42,37 @@ import type {GameType, GenericCard} from '@/types/card'
 import type {CardStore} from '@/types/store'
 import {CirclePlus} from "lucide-vue-next";
 import {useDropZone} from "@/composables/useDropZone";
+import {DragPayload} from "@/types/drag";
 
-interface DragData {
-    card: GenericCard
-    gameType: GameType
-}
-
+/**
+ * Props definition.
+ *
+ * @prop {CardStore} store - The Card store
+ */
 const props = defineProps<{
     store: CardStore
 }>()
 
-const deckZones = computed(() => props.store.deckZones)
-const deckRules = computed(() => props.store.getDeckRules)
-const gameType = computed(() => props.store.gameType as GameType)
-const zoneName = 'deck'
+const deckZones = computed(() => props.store.deckZones);
+const deckRules = computed(() => props.store.getDeckRules);
+const gameType = computed(() => props.store.gameType as GameType);
+const zoneName = 'deck';
 
-function handleDrop(data: DragData, _event: DragEvent, zoneId?: string) {
-    if (!zoneId || data.gameType !== gameType.value) return
+const {onDragEnter, onDragLeave, onDrop, isHovering, isDroppable} = useDropZone(zoneName, handleDrop);
+
+/**
+ * Handles the drop logic when a card is dropped into a deck zone
+ * Only adds the card if the game type matches and a zone is provided
+ */
+function handleDrop(data: DragPayload, _event: DragEvent) {
+    if (data.gameType !== gameType.value) return;
     props.store.addCardToDeck(data.card)
 }
 
-const {onDragEnter, onDragLeave, onDrop, isHovering, isDroppable} = useDropZone(zoneName, handleDrop)
-
+/**
+ * Selects a card in the store
+ */
 function selectCard(card: GenericCard) {
-    props.store.selectCard(card)
+    props.store.selectCard(card);
 }
 </script>
