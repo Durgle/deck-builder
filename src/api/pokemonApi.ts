@@ -1,4 +1,4 @@
-import {ApiResponse} from '@/types/api';
+import {ApiResponse, CardGameApi} from '@/types/api';
 import {PokemonAppCard} from '@/types/card';
 
 interface PokemonCard {
@@ -20,7 +20,7 @@ interface PokemonApiResponse {
 
 export const pokemonApi = {
 
-    async searchCards(query: string): Promise<ApiResponse> {
+    async fetchCards(query: string): Promise<ApiResponse> {
         try {
             let url = 'https://api.pokemontcg.io/v2/cards'
 
@@ -29,15 +29,21 @@ export const pokemonApi = {
             }
 
             const response = await fetch(url)
-            const data = await response.json() as PokemonApiResponse
+            const json = await response.json() as PokemonApiResponse
 
-            if (data.error) {
-                return {error: data.error, data: []}
-            } else {
-                return {data: data.data || []}
-            }
+            return {data: json.data || [], error: json?.error};
         } catch (error) {
-            console.error('Error fetching Pokemon cards:', error)
+            return {error: 'Failed to fetch cards. Please try again.', data: []}
+        }
+    },
+
+    async fetchCardsFromUrl(url: string): Promise<ApiResponse> {
+        try {
+            const response = await fetch(url);
+            const json = await response.json() as PokemonApiResponse;
+
+            return {data: json.data || [], error: json?.error};
+        } catch (error) {
             return {error: 'Failed to fetch cards. Please try again.', data: []}
         }
     },
@@ -55,4 +61,4 @@ export const pokemonApi = {
             isTrainer: card.supertype === 'Trainer'
         }
     }
-}
+} as CardGameApi<PokemonAppCard>;

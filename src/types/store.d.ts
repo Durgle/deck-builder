@@ -6,12 +6,14 @@ import {FlashMessage} from "@/types/flashMessage";
 import {createCardStore} from "@/stores/storeFactory";
 
 interface CardStoreState<T extends GenericCard = GenericCard> {
-    deckZones: Record<string, T[]>
-    searchResults: T[]
-    currentCard: T | null,
-    loading: boolean
-    error: FlashMessage | null
-    gameType: string
+    deckZones: Record<string, T[]>;
+    searchResults: T[];
+    currentCard: T | null;
+    loading: boolean;
+    error: FlashMessage | null;
+    gameType: string;
+    nextPageUrl: string | null;
+    reachedEnd: boolean;
 }
 
 export interface CardStoreOptions<T extends GenericCard = GenericCard> {

@@ -1,4 +1,4 @@
-import {ApiResponse} from '@/types/api';
+import {ApiResponse, CardGameApi} from '@/types/api';
 import {YugiohAppCard} from '@/types/card';
 
 interface YugiohCard {
@@ -54,24 +54,30 @@ interface YugiohApiResponse {
 
 export const yugiohApi = {
 
-    async searchCards(query: string): Promise<ApiResponse> {
+    async fetchCards(query: string): Promise<ApiResponse> {
         try {
-            let url = 'https://db.ygoprodeck.com/api/v7/cardinfo.php?num=100&offset=0'
+            let url = 'https://db.ygoprodeck.com/api/v7/cardinfo.php?num=200&offset=0'
             if (query) {
                 // noinspection SpellCheckingInspection
                 url += `&fname=${encodeURIComponent(query)}`
             }
 
             const response = await fetch(url)
-            const data = await response.json() as YugiohApiResponse
+            const json = await response.json() as YugiohApiResponse
 
-            if (data.error) {
-                return {error: data.error, data: []}
-            } else {
-                return {data: data.data || []}
-            }
+            return {data: json.data || [], error: json?.error, meta: json?.meta};
         } catch (error) {
-            console.error('Error fetching Yu-gi-oh cards:', error)
+            return {error: 'Failed to fetch cards. Please try again.', data: []}
+        }
+    },
+
+    async fetchCardsFromUrl(url: string): Promise<ApiResponse> {
+        try {
+            const response = await fetch(url);
+            const json = await response.json() as YugiohApiResponse;
+
+            return {data: json.data || [], error: json?.error, meta: json?.meta};
+        } catch (error) {
             return {error: 'Failed to fetch cards. Please try again.', data: []}
         }
     },
@@ -105,4 +111,4 @@ export const yugiohApi = {
             }
         }
     }
-}
+} as CardGameApi<YugiohAppCard>

@@ -1,5 +1,6 @@
 import {GenericCard} from '@/types/card';
 import {default as cards} from "@/assets/data/cards.json";
+import {CardGameApi} from "@/types/api";
 
 interface BaseCard {
     id: number;
@@ -14,7 +15,7 @@ interface BaseApiResponse {
 
 export const baseApi = {
 
-    async searchCards(query: string): Promise<BaseApiResponse> {
+    async fetchCards(query: string): Promise<BaseApiResponse> {
         try {
 
             const response = cards as BaseApiResponse
@@ -39,4 +40,4 @@ export const baseApi = {
             imageUrl: card.image
         }
     }
-}
+} as CardGameApi

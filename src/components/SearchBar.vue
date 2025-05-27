@@ -33,6 +33,6 @@ const searchQuery = ref('')
 const loading = computed(() => props.store.loading)
 
 function search() {
-    props.store.searchCards(searchQuery.value)
+    props.store.fetchCards(searchQuery.value)
 }
 </script>

@@ -31,7 +31,9 @@ export function createCardStore<T extends GenericCard = GenericCard>(
             searchResults: [],
             loading: false,
             error: null,
-            gameType: storeName
+            gameType: storeName,
+            nextPageUrl: null,
+            reachedEnd: false
         } as CardStoreState<T>),
 
         getters: {
@@ -104,12 +106,14 @@ export function createCardStore<T extends GenericCard = GenericCard>(
             /**
              * Search cards via API and apply adapter if needed.
              */
-            async searchCards(query: string) {
+            async fetchCards(query: string) {
                 this.loading = true;
                 this.error = null;
+                this.reachedEnd = false;
+                this.nextPageUrl = null;
 
                 try {
-                    const result = await api.searchCards(query);
+                    const result = await api.fetchCards(query);
 
                     if (result.error) {
                         this.error = {
@@ -123,6 +127,9 @@ export function createCardStore<T extends GenericCard = GenericCard>(
                         this.searchResults = result.data.map((card: any) =>
                             cardAdapter ? cardAdapter(card) : api.mapCardData(card)
                         );
+
+                        this.nextPageUrl = result.meta?.next_page ?? null;
+                        this.reachedEnd = !this.nextPageUrl;
                     }
                 } catch (error) {
                     this.error = {
@@ -133,6 +140,50 @@ export function createCardStore<T extends GenericCard = GenericCard>(
                     this.searchResults = [];
                 } finally {
                     this.loading = false;
+                }
+            },
+
+            /**
+             * Search next cards via API
+             */
+            async fetchNextPage() {
+                if (this.loading || this.reachedEnd || !this.nextPageUrl) return;
+
+                this.loading = true;
+                this.error = null;
+
+                if (api.fetchCardsFromUrl) {
+                    try {
+                        const result = await api.fetchCardsFromUrl(this.nextPageUrl);
+
+                        if (result.error) {
+                            this.error = {
+                                content: result.error,
+                                timestamp: Date.now(),
+                                type: 'error'
+                            };
+                        } else {
+                            const newCards = result.data.map((card: any) =>
+                                cardAdapter ? cardAdapter(card) : api.mapCardData(card)
+                            );
+
+                            this.searchResults.push(...newCards);
+
+                            this.nextPageUrl = result.meta?.next_page ?? null;
+                            this.reachedEnd = !this.nextPageUrl;
+                        }
+                    } catch (error) {
+                        this.error = {
+                            content: 'Failed to load more cards. Please try again.',
+                            timestamp: Date.now(),
+                            type: 'error'
+                        };
+                    } finally {
+                        this.loading = false;
+                    }
+                } else {
+                    this.nextPageUrl = null;
+                    this.reachedEnd = true;
                 }
             },
 
